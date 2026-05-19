@@ -1,0 +1,2333 @@
+<!DOCTYPE html>
+<!-- saved from url=(0039)https://jolly-llama-2f2421.netlify.app/ -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hospitality Operations Platform</title>
+<style>
+:root{
+  --ink:#0D1117; --gold:#B8974A; --gold2:#D4B06A; --parchm:#F9F6F0; --parchm2:#F0EBE0; --white:#FFFFFF;
+  --green:#1A5C38; --green2:#D4EDDA; --red:#8B2020; --blue:#1A3A5C; --teal:#0D6E6E; --purple:#4A1A8B;
+  --muted:#6B7280; --border:#DDD5C5; --shadow:0 2px 20px rgba(13,17,23,.08);
+  --radius:8px; --radius-sm:6px;
+  --heading: Georgia, "Times New Roman", serif; --body: Arial, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--parchm);color:#17212b;font-family:var(--body)}
+body{min-height:100vh}
+
+.quote-day-layout{display:flex;flex-direction:column;gap:1rem}
+.quote-day-main{min-width:0;width:100%}
+.quote-day-card-day1{min-height:620px}
+.quote-day-card-day1 h3{font-size:1.55rem}
+.quote-day-card-day1 .notice{font-size:1.02rem}
+.quote-line-row{display:grid;grid-template-columns:minmax(220px,2.2fr) 110px 120px 120px auto;gap:.75rem;align-items:end;margin-bottom:.6rem}
+.quote-line-row .actions{justify-self:end}
+.quote-line-row .line-total-pill{min-width:95px;text-align:center}
+@media (max-width:1100px){.quote-day-layout{display:flex;flex-direction:column}.quote-line-row{grid-template-columns:1fr 110px 120px;}.quote-line-row .line-total-pill,.quote-line-row .actions{grid-column:auto}}
+.dashboard-subtabs{display:flex;gap:.5rem;flex-wrap:wrap;margin:.2rem 0 1rem}
+.dashboard-subtabs button{background:#fff;border:1px solid var(--border)}
+.dashboard-subtabs button.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+.week-planner-toolbar{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-bottom:1rem}
+.week-plan-table td,.week-plan-table th{vertical-align:top}
+.week-plan-input{width:100%;min-width:110px}
+.week-plan-cell{min-height:42px}
+.week-plan-small{font-size:.88rem;color:var(--muted)}
+@media (max-width:1100px){.quote-day-layout{grid-template-columns:1fr}}
+
+a{color:var(--blue)}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer;border:1px solid var(--border);background:#fff;border-radius:var(--radius-sm);padding:.55rem .8rem}
+button.primary{background:var(--gold);color:#111;border-color:var(--gold)}
+button.ghost{background:transparent}
+button.danger{background:var(--red);color:#fff;border-color:var(--red)}
+button.small{padding:.35rem .55rem;font-size:.92rem}
+input,select,textarea{width:100%;padding:.6rem .7rem;border:1px solid var(--border);border-radius:var(--radius-sm);background:#fff}
+textarea{min-height:88px;resize:vertical}
+label{display:block;font-size:.9rem;font-weight:700;margin:.25rem 0 .25rem;color:#28323e}
+small.hint{display:block;color:var(--muted);font-size:.82rem;margin-top:.25rem}
+.grid{display:grid;gap:.9rem}
+.grid.cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.grid.cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.grid.cols-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media (max-width:1100px){.grid.cols-4,.grid.cols-3{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:760px){.grid.cols-4,.grid.cols-3,.grid.cols-2{grid-template-columns:1fr}}
+.shell{display:grid;grid-template-columns:280px 1fr;min-height:100vh}
+.sidebar{background:var(--ink);color:#fff;padding:1rem;border-right:1px solid rgba(255,255,255,.06)}
+.brand{font-family:var(--heading);font-size:1.5rem;letter-spacing:.2px;color:#fff;margin:0 0 .2rem}
+.brand-sub{color:#d9d5cb;font-size:.9rem;margin:0 0 1rem}
+.menu{display:grid;gap:.45rem;margin-top:1rem}
+.menu button{width:100%;text-align:left;border:none;background:rgba(255,255,255,.03);color:#fff;padding:.75rem .8rem;border-radius:10px}
+.menu button.active{background:linear-gradient(90deg,var(--gold),var(--gold2));color:#111;font-weight:700}
+.menu button[disabled]{opacity:.4;cursor:not-allowed}
+.main{display:flex;flex-direction:column;min-width:0}
+.topbar{background:#fff;border-bottom:1px solid var(--border);padding:.9rem 1rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;position:sticky;top:0;z-index:5}
+.topbar h1{margin:0;font-family:var(--heading);font-size:1.45rem;color:var(--ink)}
+.topbar .meta{color:var(--muted);font-size:.92rem}
+.content{padding:1rem;max-width:1600px;width:100%}
+.card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:1rem}
+.card h2,.card h3{font-family:var(--heading);margin:.1rem 0 .7rem;color:var(--ink)}
+.card h2{font-size:1.4rem}
+.card h3{font-size:1.1rem}
+.kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.9rem}
+.kpi{padding:1rem;border-radius:var(--radius);background:linear-gradient(180deg,#fff, #fbf8f1);border:1px solid var(--border);box-shadow:var(--shadow)}
+.kpi .label{color:var(--muted);font-size:.85rem}
+.kpi .value{font-family:var(--heading);font-size:1.9rem;margin-top:.2rem}
+.kpi .value.pos{color:var(--green)} .kpi .value.neg{color:var(--red)}
+@media (max-width:1200px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:760px){.shell{grid-template-columns:1fr}.sidebar{position:sticky;top:0;z-index:10}.kpis{grid-template-columns:1fr}}
+.banner{padding:.8rem 1rem;border-radius:var(--radius);background:linear-gradient(90deg,var(--gold2),#f6ead0);border:1px solid #e2c98b;color:#2a2010}
+.tabs{display:flex;flex-wrap:wrap;gap:.5rem;margin:0 0 1rem}
+.tabs button{border:1px solid var(--border);background:#fff}
+.tabs button.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+.notice{padding:.8rem 1rem;border-radius:var(--radius);margin:.7rem 0;border:1px solid var(--border);background:#fff}
+.notice.warn{background:#fff7e8;border-color:#eed38a}
+.notice.danger{background:#faecec;border-color:#efb1b1}
+.badge{display:inline-flex;align-items:center;gap:.3rem;padding:.2rem .55rem;border-radius:999px;font-size:.82rem;background:#f0f0f0;color:#333}
+.badge.ok{background:var(--green2);color:var(--green)} .badge.over{background:#fae2e2;color:var(--red)} .badge.under{background:#e8f3ff;color:var(--blue)}
+.tablewrap{overflow:auto;border:1px solid var(--border);border-radius:var(--radius);background:#fff}
+table{width:100%;border-collapse:collapse;font-size:.95rem}
+th,td{padding:.65rem .55rem;border-bottom:1px solid var(--border);vertical-align:top;text-align:left}
+th{background:var(--parchm2);position:sticky;top:0;z-index:1}
+tr:nth-child(even) td{background:#fcfbf8}
+tr:hover td{background:#fffdf5}
+.actions{display:flex;gap:.35rem;flex-wrap:wrap}
+.pill{display:inline-block;padding:.25rem .55rem;border-radius:999px;background:#f3efe4;font-size:.8rem}
+.split{display:grid;grid-template-columns:1.1fr .9fr;gap:1rem}
+@media(max-width:1100px){.split{grid-template-columns:1fr}}
+.login-bg{min-height:100vh;display:grid;place-items:center;padding:1rem;background:
+ radial-gradient(circle at top left, rgba(184,151,74,.14), transparent 35%),
+ radial-gradient(circle at right, rgba(13,110,110,.12), transparent 30%), var(--parchm)}
+.login-card{width:min(960px,100%);background:#fff;border-radius:24px;border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden;display:grid;grid-template-columns:1fr 1fr}
+.login-copy{padding:2rem;background:linear-gradient(180deg,var(--ink),#16202b);color:#fff}
+.login-copy h1{font-family:var(--heading);font-size:2.5rem;line-height:1.05;margin:0 0 .8rem}
+.login-copy p{color:#e3e6eb;line-height:1.5}
+.login-form{padding:2rem}
+.login-form h2{margin:0 0 1rem;font-family:var(--heading);font-size:1.7rem}
+footer.appfoot{padding:1rem;color:var(--muted);font-size:.86rem}
+.print-only{display:none}
+#qprint{display:none}
+.quote-page{padding:1rem}
+.quote-header{display:flex;justify-content:space-between;gap:1rem;border-bottom:2px solid var(--gold);padding-bottom:.7rem;margin-bottom:1rem}
+.quote-header h2{margin:0;font-family:var(--heading)}
+.quote-meta{font-size:.92rem}
+.quote-section{margin:1rem 0}
+.quote-section h3{margin:.1rem 0 .5rem}
+.quote-days{display:grid;gap:1rem}
+.day-card{border:1px solid var(--border);border-radius:var(--radius);padding:.8rem;background:#fff}
+.day-card h4{margin:.1rem 0 .5rem;font-family:var(--heading)}
+.footer-note{border-top:1px solid var(--border);padding-top:.8rem;margin-top:1rem;color:var(--muted);font-size:.9rem}
+@media print{
+  body *{visibility:hidden !important}
+  #qprint,#qprint *{visibility:visible !important}
+  #qprint{display:block !important;position:absolute;left:0;top:0;width:100%;padding:0}
+}
+.toast{position:fixed;right:1rem;bottom:1rem;z-index:50;background:#111;color:#fff;padding:.75rem 1rem;border-radius:10px;box-shadow:var(--shadow);max-width:420px}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="login-bg">
+    <div class="login-card">
+      <div class="login-copy">
+        <div class="brand">Hospitality Operations Platform</div>
+        <p class="brand-sub">Connected to Google Sheets. Data syncs automatically.</p>
+        <h1>Simple access. Clear workflow. No blockers.</h1>
+        <p>This version keeps the Manager / Supervisor experience clean. You can connect a spreadsheet later in Settings, but the app itself is ready to use immediately.</p>
+        <div class="notice" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12);color:#fff">
+          Defaults:<br>
+          Manager password: <strong>manager123</strong><br>
+          Supervisor password: <strong>supervisor123</strong>
+        </div>
+      </div>
+      <div class="login-form">
+        <h2>Login</h2>
+        <div class="grid">
+          <div>
+            <label>Role</label>
+            <select id="loginRole">
+              <option value="manager">Manager</option>
+              <option value="supervisor">Supervisor</option>
+            </select>
+          </div>
+          <div>
+            <label>Password</label>
+            <input id="loginPass" type="password" placeholder="Enter password">
+          </div>
+          <div class="notice" style="background:var(--green2);border-color:#b9dcc4;color:var(--green)">
+            <strong>Connected to Google Sheets.</strong> Data syncs automatically.
+          </div>
+          <button class="primary" id="loginBtn">Enter platform</button>
+        </div>
+      </div>
+    </div>
+  </div></div>
+<div id="qprint"></div>
+<script>
+const SEED = {"settings": {"app_name": "Hospitality Operations Platform", "manager_password": "manager123", "supervisor_password": "supervisor123", "spreadsheet_id": "1Ax7mpzofq-1VpEdjmtg3mWsGJZ4gM_-pZW9i4tnGr8w", "apps_script_url": "https://script.google.com/a/macros/ebay.com/s/AKfycbyUWBtMT73EwLw6a3Wa12IFWS9h2LcYVBV2N_fKK68xvR2_YQXNuisq3PG9r1fSS0ZU6g/exec", "sync_mode": "cloud", "management_fee_pct": 0.12, "auto_sync_seconds": 15, "backup_reminder_hour": 16, "backup_reminder_minute": 0}, "items": [{"name": "Coffee", "category": "Basics", "purchase_price": 0.6, "markup_pct": 0.2, "sell_price": 0.75, "description": "Coffee"}, {"name": "Tea", "category": "Basics", "purchase_price": 0.3, "markup_pct": 0.21, "sell_price": 0.38, "description": "Tea"}, {"name": "Biscuit", "category": "Basics", "purchase_price": 0.3, "markup_pct": 0.21, "sell_price": 0.38, "description": "Biscuit"}, {"name": "Fruit", "category": "Basics", "purchase_price": 0.86, "markup_pct": 0.2, "sell_price": 1.07, "description": "Fresh fruit"}, {"name": "Water (Still & Sparkling)", "category": "Basics", "purchase_price": 1.91, "markup_pct": 0.2, "sell_price": 2.39, "description": "Mixed still and sparkling water"}, {"name": "Tea, Coffee, Water", "category": "Basics", "purchase_price": 2.5, "markup_pct": 0.2, "sell_price": 3.12, "description": "Hot and cold beverage package"}, {"name": "Healthy Breakfast", "category": "Breakfast", "purchase_price": 11.0, "markup_pct": 0.2, "sell_price": 13.75, "description": "Healthy breakfast selection"}, {"name": "Classic Breakfast", "category": "Breakfast", "purchase_price": 8.8, "markup_pct": 0.2, "sell_price": 11.0, "description": "Classic breakfast selection"}, {"name": "Business Breakfast", "category": "Breakfast", "purchase_price": 12.0, "markup_pct": 0.2, "sell_price": 15.0, "description": "Business breakfast selection"}, {"name": "Mango Yoghurt Granola", "category": "Breakfast", "purchase_price": 1.55, "markup_pct": 0.2, "sell_price": 1.94, "description": "Mango yoghurt granola pot"}, {"name": "Mixed Fruit Salad Pot", "category": "Breakfast", "purchase_price": 2.0, "markup_pct": 0.2, "sell_price": 2.5, "description": "Mixed fruit salad pot"}, {"name": "Croissant", "category": "Breakfast", "purchase_price": 1.5, "markup_pct": 0.2, "sell_price": 1.88, "description": "Croissant"}, {"name": "Muffins x3", "category": "Breakfast", "purchase_price": 0.8, "markup_pct": 0.2, "sell_price": 1.0, "description": "Selection of three muffins"}, {"name": "Nutri-Grain Bars", "category": "Breakfast", "purchase_price": 0.9, "markup_pct": 0.2, "sell_price": 1.12, "description": "Nutri-Grain bars"}, {"name": "Breakfast Rolls", "category": "Breakfast", "purchase_price": 6.0, "markup_pct": 0.2, "sell_price": 7.5, "description": "Breakfast rolls platter"}, {"name": "OJ / Apple Juice", "category": "Breakfast", "purchase_price": 3.04, "markup_pct": 0.2, "sell_price": 3.8, "description": "Orange or apple juice"}, {"name": "Healthy Lunch", "category": "Lunch", "purchase_price": 7.65, "markup_pct": 0.2, "sell_price": 9.56, "description": "Healthy lunch selection"}, {"name": "Classic Lunch", "category": "Lunch", "purchase_price": 8.8, "markup_pct": 0.2, "sell_price": 11.0, "description": "Classic lunch selection"}, {"name": "Business Lunch", "category": "Lunch", "purchase_price": 10.0, "markup_pct": 0.2, "sell_price": 12.5, "description": "Business lunch selection"}, {"name": "Greek Style Chicken Salad", "category": "Lunch", "purchase_price": 2.8, "markup_pct": 0.2, "sell_price": 3.5, "description": "Greek style chicken salad"}, {"name": "Mozzarella & Pesto Pasta", "category": "Lunch", "purchase_price": 2.1, "markup_pct": 0.2, "sell_price": 2.62, "description": "Mozzarella and pesto pasta"}, {"name": "Walkers Baked Crisps", "category": "Lunch", "purchase_price": 0.67, "markup_pct": 0.2, "sell_price": 0.84, "description": "Baked crisps"}, {"name": "Chicken & Bacon Caesar Wrap", "category": "Lunch", "purchase_price": 1.95, "markup_pct": 0.2, "sell_price": 2.44, "description": "Caesar wrap"}, {"name": "Meat Sandwich Platter", "category": "Lunch", "purchase_price": 4.24, "markup_pct": 0.2, "sell_price": 5.3, "description": "Meat sandwich platter"}, {"name": "Vegan Sandwich Platter", "category": "Lunch", "purchase_price": 4.3, "markup_pct": 0.2, "sell_price": 5.38, "description": "Vegan sandwich platter"}, {"name": "Vegetarian Sandwich Platter", "category": "Lunch", "purchase_price": 4.04, "markup_pct": 0.2, "sell_price": 5.05, "description": "Vegetarian sandwich platter"}, {"name": "Prawn Crackers", "category": "Lunch", "purchase_price": 1.3, "markup_pct": 0.2, "sell_price": 1.62, "description": "Prawn crackers"}, {"name": "Sushi", "category": "Lunch", "purchase_price": 3.39, "markup_pct": 0.2, "sell_price": 4.24, "description": "Sushi selection"}, {"name": "GF Chocolate Brownies", "category": "Lunch", "purchase_price": 1.84, "markup_pct": 0.2, "sell_price": 2.3, "description": "Gluten free chocolate brownies"}, {"name": "Sweet & Spicy Chickpea Wrap (VE)", "category": "Lunch", "purchase_price": 1.8, "markup_pct": 0.2, "sell_price": 2.25, "description": "Vegan wrap"}, {"name": "Falafel Rainbow Wrap", "category": "Lunch", "purchase_price": 1.9, "markup_pct": 0.2, "sell_price": 2.38, "description": "Falafel rainbow wrap"}, {"name": "Snacks (Morning)", "category": "Snacks", "purchase_price": 3.67, "markup_pct": 0.2, "sell_price": 4.59, "description": "Morning snacks"}, {"name": "Snacks (Afternoon)", "category": "Snacks", "purchase_price": 4.24, "markup_pct": 0.2, "sell_price": 5.3, "description": "Afternoon snacks"}, {"name": "Pop Corn", "category": "Snacks", "purchase_price": 0.8, "markup_pct": 0.2, "sell_price": 1.0, "description": "Popcorn"}, {"name": "Camden Beer", "category": "Drinks - Alcoholic", "purchase_price": 2.3, "markup_pct": 0.2, "sell_price": 2.88, "description": "Camden beer"}, {"name": "Camden Pale Ale", "category": "Drinks - Alcoholic", "purchase_price": 2.3, "markup_pct": 0.2, "sell_price": 2.88, "description": "Camden pale ale"}, {"name": "Corona", "category": "Drinks - Alcoholic", "purchase_price": 1.8, "markup_pct": 0.2, "sell_price": 2.25, "description": "Corona beer"}, {"name": "Coors", "category": "Drinks - Alcoholic", "purchase_price": 1.36, "markup_pct": 0.2, "sell_price": 1.7, "description": "Coors beer"}, {"name": "Rosé Wine", "category": "Drinks - Alcoholic", "purchase_price": 7.5, "markup_pct": 0.2, "sell_price": 9.38, "description": "Rosé wine"}, {"name": "White Wine", "category": "Drinks - Alcoholic", "purchase_price": 13.5, "markup_pct": 0.2, "sell_price": 16.88, "description": "White wine"}, {"name": "Red Wine", "category": "Drinks - Alcoholic", "purchase_price": 10.0, "markup_pct": 0.2, "sell_price": 12.5, "description": "Red wine"}, {"name": "Bottega Gold Prosecco", "category": "Drinks - Alcoholic", "purchase_price": 3.7, "markup_pct": 0.2, "sell_price": 4.62, "description": "Prosecco"}, {"name": "Lucky Saint NA Beer", "category": "Drinks - Non-Alc", "purchase_price": 1.65, "markup_pct": 0.2, "sell_price": 2.06, "description": "Non-alcoholic beer"}, {"name": "Coca-Cola", "category": "Drinks - Soft", "purchase_price": 0.65, "markup_pct": 0.2, "sell_price": 0.81, "description": "Coca-Cola"}, {"name": "Tango", "category": "Drinks - Soft", "purchase_price": 0.55, "markup_pct": 0.2, "sell_price": 0.69, "description": "Tango"}, {"name": "Orange Juice", "category": "Drinks - Soft", "purchase_price": 0.65, "markup_pct": 0.2, "sell_price": 0.81, "description": "Orange juice"}, {"name": "Soft Drinks Selection", "category": "Drinks - Soft", "purchase_price": 2.1, "markup_pct": 0.2, "sell_price": 2.62, "description": "Assorted soft drinks"}], "suppliers": [{"name": "Bibendum", "active": true}, {"name": "Brakes", "active": true}, {"name": "Bunzl", "active": true}, {"name": "Change Please", "active": true}, {"name": "DDC", "active": true}, {"name": "Delicious Ideas", "active": true}, {"name": "Eden Caterers", "active": true}, {"name": "Fooditude", "active": true}, {"name": "Fruitful Office", "active": true}, {"name": "Hermolis Cosher", "active": true}, {"name": "Lockhart", "active": true}, {"name": "Nespresso", "active": true}, {"name": "Ole & Stein", "active": true}, {"name": "Ottolenghi Richmond", "active": true}, {"name": "SEB", "active": true}, {"name": "Simply Lunch", "active": true}, {"name": "Soho Sandwich", "active": true}, {"name": "Town & Country", "active": true}, {"name": "Vegetarian Express", "active": true}], "employees": [{"name": "Ioannis", "entitlement_days": 17.5, "start_date": "2025-05-19", "notes": "Manager", "role": "Manager", "active": true}, {"name": "Lucas", "entitlement_days": 18, "start_date": "2025-05-01", "notes": "Birthday: 13 Feb 2026", "role": "Supervisor", "active": true}], "leave": [], "budgets": [{"month": "2025-05", "category": "Pantry Breakfast Items", "monthly_budget": 3466.67}, {"month": "2025-05", "category": "Fruit", "monthly_budget": 1386.67}, {"month": "2025-05", "category": "Tea/Coffee", "monthly_budget": 4364.75}, {"month": "2025-05", "category": "Brunch Offer", "monthly_budget": 1646.67}, {"month": "2025-05", "category": "Hot Lunch", "monthly_budget": 10658.75}, {"month": "2025-05", "category": "Free Issue Snacks", "monthly_budget": 9218.08}, {"month": "2025-05", "category": "Hospitality", "monthly_budget": 0}, {"month": "2025-05", "category": "Vending Machine", "monthly_budget": 0}], "quotes": [], "orders": [], "wastage": [], "invoices": [], "month_end": [], "logs": [], "bank_holidays": [{"date": "2025-04-18", "name": "Good Friday"}, {"date": "2025-04-21", "name": "Easter Monday"}, {"date": "2025-05-05", "name": "Early May BH"}, {"date": "2025-05-26", "name": "Spring BH"}, {"date": "2025-08-25", "name": "Summer BH"}, {"date": "2025-12-25", "name": "Christmas Day"}, {"date": "2025-12-26", "name": "Boxing Day"}, {"date": "2026-04-03", "name": "Good Friday"}, {"date": "2026-04-06", "name": "Easter Monday"}, {"date": "2026-05-04", "name": "Early May BH"}, {"date": "2026-05-25", "name": "Spring BH"}, {"date": "2026-08-31", "name": "Summer BH"}, {"date": "2026-12-25", "name": "Christmas Day"}, {"date": "2026-12-28", "name": "Boxing Day (substitute)"}]};
+const ITEMS_SEED = [{"name": "Coffee", "category": "Basics", "purchase_price": 0.6, "markup_pct": 0.2, "sell_price": 0.75, "description": "Coffee"}, {"name": "Tea", "category": "Basics", "purchase_price": 0.3, "markup_pct": 0.21, "sell_price": 0.38, "description": "Tea"}, {"name": "Biscuit", "category": "Basics", "purchase_price": 0.3, "markup_pct": 0.21, "sell_price": 0.38, "description": "Biscuit"}, {"name": "Fruit", "category": "Basics", "purchase_price": 0.86, "markup_pct": 0.2, "sell_price": 1.07, "description": "Fresh fruit"}, {"name": "Water (Still & Sparkling)", "category": "Basics", "purchase_price": 1.91, "markup_pct": 0.2, "sell_price": 2.39, "description": "Mixed still and sparkling water"}, {"name": "Tea, Coffee, Water", "category": "Basics", "purchase_price": 2.5, "markup_pct": 0.2, "sell_price": 3.12, "description": "Hot and cold beverage package"}, {"name": "Healthy Breakfast", "category": "Breakfast", "purchase_price": 11.0, "markup_pct": 0.2, "sell_price": 13.75, "description": "Healthy breakfast selection"}, {"name": "Classic Breakfast", "category": "Breakfast", "purchase_price": 8.8, "markup_pct": 0.2, "sell_price": 11.0, "description": "Classic breakfast selection"}, {"name": "Business Breakfast", "category": "Breakfast", "purchase_price": 12.0, "markup_pct": 0.2, "sell_price": 15.0, "description": "Business breakfast selection"}, {"name": "Mango Yoghurt Granola", "category": "Breakfast", "purchase_price": 1.55, "markup_pct": 0.2, "sell_price": 1.94, "description": "Mango yoghurt granola pot"}, {"name": "Mixed Fruit Salad Pot", "category": "Breakfast", "purchase_price": 2.0, "markup_pct": 0.2, "sell_price": 2.5, "description": "Mixed fruit salad pot"}, {"name": "Croissant", "category": "Breakfast", "purchase_price": 1.5, "markup_pct": 0.2, "sell_price": 1.88, "description": "Croissant"}, {"name": "Muffins x3", "category": "Breakfast", "purchase_price": 0.8, "markup_pct": 0.2, "sell_price": 1.0, "description": "Selection of three muffins"}, {"name": "Nutri-Grain Bars", "category": "Breakfast", "purchase_price": 0.9, "markup_pct": 0.2, "sell_price": 1.12, "description": "Nutri-Grain bars"}, {"name": "Breakfast Rolls", "category": "Breakfast", "purchase_price": 6.0, "markup_pct": 0.2, "sell_price": 7.5, "description": "Breakfast rolls platter"}, {"name": "OJ / Apple Juice", "category": "Breakfast", "purchase_price": 3.04, "markup_pct": 0.2, "sell_price": 3.8, "description": "Orange or apple juice"}, {"name": "Healthy Lunch", "category": "Lunch", "purchase_price": 7.65, "markup_pct": 0.2, "sell_price": 9.56, "description": "Healthy lunch selection"}, {"name": "Classic Lunch", "category": "Lunch", "purchase_price": 8.8, "markup_pct": 0.2, "sell_price": 11.0, "description": "Classic lunch selection"}, {"name": "Business Lunch", "category": "Lunch", "purchase_price": 10.0, "markup_pct": 0.2, "sell_price": 12.5, "description": "Business lunch selection"}, {"name": "Greek Style Chicken Salad", "category": "Lunch", "purchase_price": 2.8, "markup_pct": 0.2, "sell_price": 3.5, "description": "Greek style chicken salad"}, {"name": "Mozzarella & Pesto Pasta", "category": "Lunch", "purchase_price": 2.1, "markup_pct": 0.2, "sell_price": 2.62, "description": "Mozzarella and pesto pasta"}, {"name": "Walkers Baked Crisps", "category": "Lunch", "purchase_price": 0.67, "markup_pct": 0.2, "sell_price": 0.84, "description": "Baked crisps"}, {"name": "Chicken & Bacon Caesar Wrap", "category": "Lunch", "purchase_price": 1.95, "markup_pct": 0.2, "sell_price": 2.44, "description": "Caesar wrap"}, {"name": "Meat Sandwich Platter", "category": "Lunch", "purchase_price": 4.24, "markup_pct": 0.2, "sell_price": 5.3, "description": "Meat sandwich platter"}, {"name": "Vegan Sandwich Platter", "category": "Lunch", "purchase_price": 4.3, "markup_pct": 0.2, "sell_price": 5.38, "description": "Vegan sandwich platter"}, {"name": "Vegetarian Sandwich Platter", "category": "Lunch", "purchase_price": 4.04, "markup_pct": 0.2, "sell_price": 5.05, "description": "Vegetarian sandwich platter"}, {"name": "Prawn Crackers", "category": "Lunch", "purchase_price": 1.3, "markup_pct": 0.2, "sell_price": 1.62, "description": "Prawn crackers"}, {"name": "Sushi", "category": "Lunch", "purchase_price": 3.39, "markup_pct": 0.2, "sell_price": 4.24, "description": "Sushi selection"}, {"name": "GF Chocolate Brownies", "category": "Lunch", "purchase_price": 1.84, "markup_pct": 0.2, "sell_price": 2.3, "description": "Gluten free chocolate brownies"}, {"name": "Sweet & Spicy Chickpea Wrap (VE)", "category": "Lunch", "purchase_price": 1.8, "markup_pct": 0.2, "sell_price": 2.25, "description": "Vegan wrap"}, {"name": "Falafel Rainbow Wrap", "category": "Lunch", "purchase_price": 1.9, "markup_pct": 0.2, "sell_price": 2.38, "description": "Falafel rainbow wrap"}, {"name": "Snacks (Morning)", "category": "Snacks", "purchase_price": 3.67, "markup_pct": 0.2, "sell_price": 4.59, "description": "Morning snacks"}, {"name": "Snacks (Afternoon)", "category": "Snacks", "purchase_price": 4.24, "markup_pct": 0.2, "sell_price": 5.3, "description": "Afternoon snacks"}, {"name": "Pop Corn", "category": "Snacks", "purchase_price": 0.8, "markup_pct": 0.2, "sell_price": 1.0, "description": "Popcorn"}, {"name": "Camden Beer", "category": "Drinks - Alcoholic", "purchase_price": 2.3, "markup_pct": 0.2, "sell_price": 2.88, "description": "Camden beer"}, {"name": "Camden Pale Ale", "category": "Drinks - Alcoholic", "purchase_price": 2.3, "markup_pct": 0.2, "sell_price": 2.88, "description": "Camden pale ale"}, {"name": "Corona", "category": "Drinks - Alcoholic", "purchase_price": 1.8, "markup_pct": 0.2, "sell_price": 2.25, "description": "Corona beer"}, {"name": "Coors", "category": "Drinks - Alcoholic", "purchase_price": 1.36, "markup_pct": 0.2, "sell_price": 1.7, "description": "Coors beer"}, {"name": "Rosé Wine", "category": "Drinks - Alcoholic", "purchase_price": 7.5, "markup_pct": 0.2, "sell_price": 9.38, "description": "Rosé wine"}, {"name": "White Wine", "category": "Drinks - Alcoholic", "purchase_price": 13.5, "markup_pct": 0.2, "sell_price": 16.88, "description": "White wine"}, {"name": "Red Wine", "category": "Drinks - Alcoholic", "purchase_price": 10.0, "markup_pct": 0.2, "sell_price": 12.5, "description": "Red wine"}, {"name": "Bottega Gold Prosecco", "category": "Drinks - Alcoholic", "purchase_price": 3.7, "markup_pct": 0.2, "sell_price": 4.62, "description": "Prosecco"}, {"name": "Lucky Saint NA Beer", "category": "Drinks - Non-Alc", "purchase_price": 1.65, "markup_pct": 0.2, "sell_price": 2.06, "description": "Non-alcoholic beer"}, {"name": "Coca-Cola", "category": "Drinks - Soft", "purchase_price": 0.65, "markup_pct": 0.2, "sell_price": 0.81, "description": "Coca-Cola"}, {"name": "Tango", "category": "Drinks - Soft", "purchase_price": 0.55, "markup_pct": 0.2, "sell_price": 0.69, "description": "Tango"}, {"name": "Orange Juice", "category": "Drinks - Soft", "purchase_price": 0.65, "markup_pct": 0.2, "sell_price": 0.81, "description": "Orange juice"}, {"name": "Soft Drinks Selection", "category": "Drinks - Soft", "purchase_price": 2.1, "markup_pct": 0.2, "sell_price": 2.62, "description": "Assorted soft drinks"}];
+const BANK_HOLIDAYS = [{"date": "2025-04-18", "name": "Good Friday"}, {"date": "2025-04-21", "name": "Easter Monday"}, {"date": "2025-05-05", "name": "Early May BH"}, {"date": "2025-05-26", "name": "Spring BH"}, {"date": "2025-08-25", "name": "Summer BH"}, {"date": "2025-12-25", "name": "Christmas Day"}, {"date": "2025-12-26", "name": "Boxing Day"}, {"date": "2026-04-03", "name": "Good Friday"}, {"date": "2026-04-06", "name": "Easter Monday"}, {"date": "2026-05-04", "name": "Early May BH"}, {"date": "2026-05-25", "name": "Spring BH"}, {"date": "2026-08-31", "name": "Summer BH"}, {"date": "2026-12-25", "name": "Christmas Day"}, {"date": "2026-12-28", "name": "Boxing Day (substitute)"}];
+const ROOMS = ["Chitty Bang", "Bond", "Collaboration", "Notting Hill", "Yard", "Stonehenge", "Silverstone", "Shard", "Great Expectations", "Concorde", "Double Decker", "Elephant and Castle", "Canary Wharf", "Other"];
+const ORDER_CATEGORIES = ["Pantry Breakfast Items", "Fruit", "Tea/Coffee", "Brunch Offer", "Hot Lunch", "Free Issue Snacks", "Hospitality", "Vending Machine"];
+const WASTE_UNITS = ["Portions", "kg", "g", "Litres", "Boxes", "Packs", "Trays", "Units", "Other"];
+const WASTE_REASONS = ["Expired", "Overordered", "Cancelled Event", "Quality Issue", "Damaged", "Leftover from Lunch", "Leftover from Breakfast", "Spillage", "Returned", "Other"];
+const WEEK_PLANNER_ROWS = ['LY Forecast', 'This Year Forecast', 'Difference', 'Food Ordered', 'Food Served', 'Waste', 'Food of the Day', 'Theme', 'Team Holidays', 'Ops Reminder', 'Ops Status', 'Notes/Event 1', 'Notes/Event 2', 'Notes/Event 3', 'Notes/Event 4'];
+const STORAGE_KEY = 'hospitality_ops_platform_v1';
+
+const els = {};
+const state = loadState();
+let session = { loggedIn:false, role:null, name:null };
+let activeTab = 'dashboard';
+let quoteDraft = emptyQuoteDraft();
+let quoteViewTab = 'new';
+let editing = { module:null, id:null };
+let toastTimer = null;
+let cloudStatus = 'Cloud sync ready.';
+let cloudSaveTimer = null;
+let cloudSyncTimer = null;
+let cloudSuspended = false;
+let dashboardView = 'overview';
+let dashboardPlannerStart = weekStartMonday(isoDate());
+
+function loadState(){
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if(!raw) return structuredClone(SEED);
+  try {
+    const parsed = JSON.parse(raw);
+    return hydrateState(parsed);
+  } catch(e) {
+    console.warn('Failed to parse saved state, using seed.', e);
+    return structuredClone(SEED);
+  }
+}
+function hydrateState(data){
+  const s = structuredClone(SEED);
+  for(const k of Object.keys(s)){
+    if(data && Object.prototype.hasOwnProperty.call(data, k)) s[k] = data[k];
+  }
+  s.settings = Object.assign({}, SEED.settings, data.settings || {});
+  s.items = Array.isArray(data.items) && data.items.length ? data.items : structuredClone(ITEMS_SEED);
+  s.bank_holidays = Array.isArray(data.bank_holidays) && data.bank_holidays.length ? data.bank_holidays : structuredClone(BANK_HOLIDAYS);
+  s.suppliers = Array.isArray(data.suppliers) && data.suppliers.length ? data.suppliers : structuredClone(SEED.suppliers);
+  s.employees = Array.isArray(data.employees) ? data.employees : [];
+  s.leave = Array.isArray(data.leave) ? data.leave : [];
+  s.budgets = Array.isArray(data.budgets) ? data.budgets : [];
+  s.quotes = Array.isArray(data.quotes) ? data.quotes : [];
+  s.orders = Array.isArray(data.orders) ? data.orders : [];
+  s.wastage = Array.isArray(data.wastage) ? data.wastage : [];
+  s.invoices = Array.isArray(data.invoices) ? data.invoices : [];
+  s.month_end = Array.isArray(data.month_end) ? data.month_end : [];
+  s.logs = Array.isArray(data.logs) ? data.logs : [];
+  return s;
+}
+function saveState(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); scheduleCloudSave(); }
+function nowISO(){ return new Date().toISOString(); }
+function fmtMoney(n){ const x = Number(n || 0); return '£' + x.toFixed(2); }
+function fmtDate(v){ if(!v) return ''; return new Date(v + 'T00:00:00').toLocaleDateString('en-GB'); }
+function fmtDateTime(v){ if(!v) return ''; const d = new Date(v); return d.toLocaleString('en-GB'); }
+function isoDate(d=new Date()){ return d.toISOString().slice(0,10); }
+function monthKey(d= new Date()){ return d.toISOString().slice(0,7); }
+function monthLabel(m){ const [y,mo] = m.split('-').map(Number); return new Date(y, mo-1, 1).toLocaleDateString('en-GB', {month:'long', year:'numeric'}); }
+function money(n){ return Number(n || 0); }
+function clone(obj){ return JSON.parse(JSON.stringify(obj)); }
+function escapeHtml(str=''){ return String(str).replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s])); }
+function uid(prefix='id'){ return prefix + '_' + Math.random().toString(36).slice(2,10) + Date.now().toString(36); }
+function toast(msg){ const app = document.getElementById('app'); if(toastTimer) clearTimeout(toastTimer);
+  let t = document.getElementById('toast');
+  if(!t){ t = document.createElement('div'); t.id='toast'; t.className='toast'; document.body.appendChild(t); }
+  t.textContent = msg; t.style.display='block'; toastTimer = setTimeout(()=>{ t.style.display='none'; }, 2200);
+}
+function setActiveTab(tab){ activeTab = tab; render(); }
+
+function emptyQuoteDraft(){
+  return {
+    quote_ref:'',
+    event_name:'',
+    client_company:'',
+    date_day1: isoDate(),
+    date_day2:'',
+    date_day3:'',
+    guests:'',
+    room_location:'',
+    room_other:'',
+    style_type:'',
+    organiser:'',
+    allergen_dietary:'',
+    cost_code:'',
+    notes:'',
+    status:'Draft',
+    day1_lines:[{item:'',qty:1,price:0}],
+    day2_lines:[{item:'',qty:0,price:0}],
+    day3_lines:[{item:'',qty:0,price:0}],
+    day2_enabled:false,
+    day3_enabled:false
+  };
+}
+function itemPrice(name){
+  const found = state.items.find(i => i.name === name);
+  return found ? Number(found.sell_price || 0) : 0;
+}
+function itemPurchasePrice(name){
+  const found = state.items.find(i => i.name === name);
+  return found ? Number(found.purchase_price || 0) : 0;
+}
+function itemCost(name){
+  const found = state.items.find(i => i.name === name);
+  return found ? Number(found.purchase_price || 0) : 0;
+}
+function normalizeMarkupPct(value){
+  const n = Number(value || 0);
+  if (!Number.isFinite(n)) return 0;
+  return n > 1 ? n / 100 : n;
+}
+function calcSellPrice(purchase, markupPct){
+  const cost = Number(purchase || 0);
+  const markup = normalizeMarkupPct(markupPct);
+  if (!Number.isFinite(cost) || cost <= 0) return 0;
+  if (!Number.isFinite(markup) || markup < 0 || markup >= 1) return 0;
+  return cost / (1 - markup);
+}
+function updateItemSellPreview(){
+  const purchaseEl = document.getElementById('itemPurchase');
+  const markupEl = document.getElementById('itemMarkup');
+  const sellEl = document.getElementById('itemSell');
+  if (!purchaseEl || !markupEl || !sellEl) return;
+  const sell = calcSellPrice(purchaseEl.value, markupEl.value);
+  sellEl.value = sell ? sell.toFixed(2) : '0.00';
+}
+
+function quoteLinesTotal(lines){
+  return (lines || []).reduce((sum, l) => sum + (Number(l.qty)||0) * (Number(l.price)||0), 0);
+}
+function quoteCalc(draft){
+  const days = [draft.day1_lines, draft.day2_lines, draft.day3_lines].map(quoteLinesTotal);
+  const subtotal = days.reduce((a,b)=>a+b,0);
+  const fee = subtotal * Number(state.settings.management_fee_pct || 0.12);
+  const total = subtotal + fee;
+  return {days, subtotal, fee, total};
+}
+function updateQuoteSummaryUI(){
+  const calc = quoteCalc(quoteDraft);
+  const map = {
+    'quote-subtotal': fmtMoney(calc.subtotal),
+    'quote-fee': fmtMoney(calc.fee),
+    'quote-total': fmtMoney(calc.total),
+    'quote-ref': quoteDraft.quote_ref || '—'
+  };
+  Object.entries(map).forEach(([id, value]) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = value;
+  });
+  [1,2,3].forEach(day => {
+    const totalEl = document.getElementById(`quote-day-total-${day}`);
+    if (totalEl) totalEl.textContent = fmtMoney(quoteLinesTotal(quoteDraft[`day${day}_lines`]));
+    const labelEl = document.getElementById(`quote-day-label-${day}`);
+    if (labelEl) {
+      const d = quoteDraft[`date_day${day}`];
+      labelEl.textContent = d ? ` — ${fmtDate(d)}` : '';
+    }
+  });
+  const roomOtherWrap = document.getElementById('quote-room-other-wrap');
+  const roomSelect = document.getElementById('q_room_location');
+  if (roomOtherWrap && roomSelect) {
+    roomOtherWrap.style.display = roomSelect.value === 'Other' ? '' : 'none';
+  }
+}
+function quoteNumberForDate(dt){
+  const d = new Date(dt);
+  const mm = String(d.getMonth()+1).padStart(2,'0');
+  const yy = String(d.getFullYear()).slice(-2);
+  const prefix = `HQ-${mm}${yy}`;
+  const count = state.quotes.filter(q => (q.quote_ref || '').startsWith(prefix)).length + 1;
+  return `${prefix}${String(count).padStart(2,'0')}`;
+}
+function addLog(type, ref, description, amount=0, status='OK'){
+  state.logs.unshift({id:uid('log'), date:isoDate(), type, ref, description, amount:Number(amount)||0, status, created_at:nowISO(), updated_at:nowISO(), created_by:session.name || 'system'});
+}
+function addInvoiceFromQuote(q){
+  const inv = {
+    invoice_no: `INV-${q.quote_ref.replace('HQ-','')}`,
+    quote_ref: q.quote_ref,
+    event_name: q.event_name,
+    client_company: q.client_company,
+    date: q.date_day1,
+    cost_code: q.cost_code || '',
+    net: q.subtotal,
+    fee: q.mgmt_fee,
+    total: q.total_ex_vat,
+    status: 'Draft',
+    created_at: nowISO(),
+    updated_at: nowISO()
+  };
+  state.invoices.unshift(inv);
+}
+function addMonthEndFromQuote(q){
+  state.month_end.unshift({
+    id: uid('me'),
+    month: q.date_day1.slice(0,7),
+    event_ref: q.quote_ref,
+    event_name: q.event_name,
+    client_company: q.client_company,
+    subtotal: q.subtotal,
+    mgmt_fee: q.mgmt_fee,
+    total: q.total_ex_vat,
+    category_summary_json: JSON.stringify([]),
+    notes: q.notes || '',
+    created_at: nowISO()
+  });
+}
+function ensureSeed(){
+  if(!state.items || !state.items.length) state.items = structuredClone(ITEMS_SEED);
+  if(!state.suppliers || !state.suppliers.length) state.suppliers = structuredClone(SEED.suppliers);
+  if(!state.bank_holidays || !state.bank_holidays.length) state.bank_holidays = structuredClone(BANK_HOLIDAYS);
+  if(!state.settings) state.settings = structuredClone(SEED.settings);
+  state.settings = Object.assign({}, SEED.settings, state.settings || {});
+  if(!state.settings.apps_script_url) state.settings.apps_script_url = 'https://script.google.com/a/macros/ebay.com/s/AKfycbyUWBtMT73EwLw6a3Wa12IFWS9h2LcYVBV2N_fKK68xvR2_YQXNuisq3PG9r1fSS0ZU6g/exec';
+  if(!state.settings.spreadsheet_id) state.settings.spreadsheet_id = '1Ax7mpzofq-1VpEdjmtg3mWsGJZ4gM_-pZW9i4tnGr8w';
+  state.settings.sync_mode = 'cloud';
+  state.settings.auto_sync_seconds = 15;
+  saveState();
+}
+ensureSeed();
+
+
+
+function cloudBaseUrl(){
+  return String(
+    state.settings.apps_script_url ||
+    'https://script.google.com/a/macros/ebay.com/s/AKfycbyUWBtMT73EwLw6a3Wa12IFWS9h2LcYVBV2N_fKK68xvR2_YQXNuisq3PG9r1fSS0ZU6g/exec'
+  ).trim();
+}
+function cloudEnabled(){
+  return String(state.settings.sync_mode || '').toLowerCase() === 'cloud' && !!cloudBaseUrl();
+}
+function cloudProxyUrl(){
+  return '/.netlify/functions/cloud-sync';
+}
+function setCloudStatus(message, kind='ok'){
+  cloudStatus = message;
+  const statusEl = document.getElementById('cloud-status');
+  if(statusEl) statusEl.textContent = message;
+  const badgeEl = document.getElementById('cloud-status-badge');
+  if(badgeEl){
+    badgeEl.textContent = kind === 'error' ? 'Cloud error' : 'Cloud';
+    badgeEl.className = `badge ${kind === 'error' ? 'over' : 'ok'}`;
+  }
+}
+function cloudPayload(){
+  return {
+    settings: state.settings,
+    items: state.items,
+    employees: state.employees,
+    leave: state.leave,
+    suppliers: state.suppliers,
+    budgets: state.budgets,
+    quotes: state.quotes,
+    orders: state.orders,
+    wastage: state.wastage,
+    invoices: state.invoices,
+    month_end: state.month_end,
+    logs: state.logs
+  };
+}
+
+function collectAppDataForCloud(){
+  return cloudPayload();
+}
+
+function applyCloudData(data){
+  if(!data || typeof data !== 'object') return;
+  const keepIfEmpty = (current, incoming) => Array.isArray(incoming) && incoming.length ? incoming : current;
+  state.settings = { ...state.settings, ...(data.settings || {}) };
+  state.items = keepIfEmpty(state.items, data.items);
+  state.employees = keepIfEmpty(state.employees, data.employees);
+  state.leave = keepIfEmpty(state.leave, data.leave);
+  state.suppliers = keepIfEmpty(state.suppliers, data.suppliers);
+  state.budgets = keepIfEmpty(state.budgets, data.budgets);
+  state.quotes = keepIfEmpty(state.quotes, data.quotes);
+  state.orders = keepIfEmpty(state.orders, data.orders);
+  state.wastage = keepIfEmpty(state.wastage, data.wastage);
+  state.invoices = keepIfEmpty(state.invoices, data.invoices);
+  state.month_end = keepIfEmpty(state.month_end, data.month_end);
+  state.logs = keepIfEmpty(state.logs, data.logs);
+  saveState();
+}
+function scheduleCloudSave(){
+  if(!session.loggedIn || !cloudEnabled() || cloudSuspended) return;
+  clearTimeout(cloudSaveTimer);
+  cloudSaveTimer = setTimeout(() => {
+    syncToCloud().catch(err => setCloudStatus(`Cloud save failed: ${err.message || err}`, 'error'));
+  }, 1200);
+}
+
+async function cloudRequest(action, data = null){
+  const baseUrl = cloudProxyUrl();
+  if(!baseUrl) throw new Error('Cloud proxy unavailable');
+  const appsScriptUrl = cloudBaseUrl();
+  if(!appsScriptUrl) throw new Error('Missing Apps Script URL');
+
+  if(action === 'readAll' || action === 'ping' || action === 'readSheet'){
+    const qs = new URLSearchParams({ action, appsScriptUrl });
+    if(action === 'readSheet' && data && data.sheet) qs.set('sheet', data.sheet);
+    const res = await fetch(`${baseUrl}?${qs.toString()}`, {
+      method: 'GET',
+      headers: { 'Accept': 'application/json' },
+      credentials: 'same-origin'
+    });
+    const txt = await res.text();
+    let json;
+    try { json = txt ? JSON.parse(txt) : null; } catch (e) { throw new Error('Cloud proxy returned invalid JSON'); }
+    if(!res.ok || !json || json.ok === false) throw new Error((json && json.error) || `Cloud ${action} failed (${res.status})`);
+    return json;
+  }
+
+  if(action === 'saveAll'){
+    const res = await fetch(baseUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'same-origin',
+      body: JSON.stringify({ action, appsScriptUrl, data: data || {} })
+    });
+    const txt = await res.text();
+    let json;
+    try { json = txt ? JSON.parse(txt) : null; } catch (e) { throw new Error('Cloud proxy returned invalid JSON'); }
+    if(!res.ok || !json || json.ok === false) throw new Error((json && json.error) || `Cloud ${action} failed (${res.status})`);
+    return json;
+  }
+
+  throw new Error(`Unsupported cloud action: ${action}`);
+}
+
+async function syncFromCloud(){
+  if(!session.loggedIn || !cloudEnabled()) return;
+  try{
+    setCloudStatus('Loading from Google Sheets...', 'loading');
+    const data = await cloudRequest('readAll');
+    if(!data || !data.ok || !data.data) throw new Error((data && data.error) || 'Bad cloud payload');
+    cloudSuspended = true;
+    applyCloudData(data.data);
+    cloudSuspended = false;
+    setCloudStatus('Cloud loaded successfully.', 'ok');
+    if(!(activeTab === 'quotes' && quoteViewTab === 'new')){
+      render();
+    }
+  }catch(err){
+    cloudSuspended = false;
+    setCloudStatus(`Cloud load failed: ${err.message || err}`, 'error');
+  }
+}
+async function syncToCloud(){
+  if(!session.loggedIn || !cloudEnabled()) return;
+  try{
+    setCloudStatus('Saving to Google Sheets...', 'loading');
+    await cloudRequest('saveAll', collectAppDataForCloud());
+    setCloudStatus('Saved to Google Sheets.', 'ok');
+  }catch(err){
+    setCloudStatus(`Cloud save failed: ${err.message || err}`, 'error');
+    throw err;
+  }
+}
+function startCloudSync(){
+  stopCloudSync();
+  if(!cloudEnabled()){
+    setCloudStatus('Cloud sync not configured.');
+    return;
+  }
+  setCloudStatus('Connected to Google Sheets.');
+  setTimeout(() => {
+    syncFromCloud().finally(() => {
+      const ms = Math.max(15000, Number(state.settings.auto_sync_seconds || 15) * 1000);
+      cloudSyncTimer = setInterval(() => {
+        syncFromCloud();
+      }, ms);
+    });
+  }, 250);
+}
+function stopCloudSync(){
+  if(cloudSyncTimer){ clearInterval(cloudSyncTimer); cloudSyncTimer = null; }
+  if(cloudSaveTimer){ clearTimeout(cloudSaveTimer); cloudSaveTimer = null; }
+}
+function renderCloudStatus(){
+  return escapeHtml(cloudStatus);
+}
+
+function login(role, password){
+  const cfg = state.settings || {};
+  const expected = role === 'manager' ? cfg.manager_password : cfg.supervisor_password;
+  if(password !== expected) return false;
+  session.loggedIn = true;
+  session.role = role;
+  session.name = role === 'manager' ? 'Manager' : 'Supervisor';
+  activeTab = 'dashboard';
+  saveState();
+  render();
+  startBackupReminder();
+  startCloudSync();
+  return true;
+}
+function logout(){
+  stopCloudSync();
+  session = { loggedIn:false, role:null, name:null };
+  activeTab = 'dashboard';
+  quoteViewTab = 'new';
+  setCloudStatus('Signed out.', 'ok');
+  render();
+}
+function isManager(){ return session.role === 'manager'; }
+function canSee(module){ return isManager() || !['budgets','employees','leave','month_end'].includes(module); }
+function moneyStatusClass(n){ return n >= 0 ? 'pos' : 'neg'; }
+
+function render(){
+  const app = document.getElementById('app');
+  if(!session.loggedIn){ app.innerHTML = renderLogin(); bindLogin(); return; }
+  app.innerHTML = renderShell();
+  bindShell();
+  renderActive();
+}
+function renderLogin(){
+  const name = state.settings.app_name || 'Hospitality Operations Platform';
+  return `
+  <div class="login-bg">
+    <div class="login-card">
+      <div class="login-copy">
+        <div class="brand">${escapeHtml(name)}</div>
+        <p class="brand-sub">Connected to Google Sheets. Data syncs automatically.</p>
+        <h1>Simple access. Clear workflow. No blockers.</h1>
+        <p>This version keeps the Manager / Supervisor experience clean. You can connect a spreadsheet later in Settings, but the app itself is ready to use immediately.</p>
+        <div class="notice" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12);color:#fff">
+          Defaults:<br>
+          Manager password: <strong>manager123</strong><br>
+          Supervisor password: <strong>supervisor123</strong>
+        </div>
+      </div>
+      <div class="login-form">
+        <h2>Login</h2>
+        <div class="grid">
+          <div>
+            <label>Role</label>
+            <select id="loginRole">
+              <option value="manager">Manager</option>
+              <option value="supervisor">Supervisor</option>
+            </select>
+          </div>
+          <div>
+            <label>Password</label>
+            <input id="loginPass" type="password" placeholder="Enter password" />
+          </div>
+          <div class="notice" style="background:var(--green2);border-color:#b9dcc4;color:var(--green)">
+            <strong>Connected to Google Sheets.</strong> Data syncs automatically.
+          </div>
+          <button class="primary" id="loginBtn">Enter platform</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+function renderShell(){
+  const tabs = [
+    ['dashboard','Dashboard'],
+    ['quotes','Quotes'],
+    ['orders','Orders'],
+    ['wastage','Wastage'],
+    ['items','Price List'],
+    ['budgets','Budgets'],
+    ['hr','HR'],
+    ['logs','Logs'],
+    ['settings','Settings']
+  ].filter(([id]) => canSee(id));
+  return `
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand">${escapeHtml(state.settings.app_name || 'Hospitality Platform')}</div>
+      <p class="brand-sub">Role: ${session.role === 'manager' ? 'Manager' : 'Supervisor'}</p>
+      <div class="banner" style="margin-bottom:.75rem">
+        <strong>Cloud sync</strong><br>
+        <span id="cloud-status">${renderCloudStatus()}</span>
+        <div class="actions" style="margin-top:.5rem">
+          <button class="small" data-action="sync-now">Sync Now</button>
+        </div>
+      </div>
+      <div class="menu">
+        ${tabs.map(([id, label]) => `<button class="${activeTab===id?'active':''}" data-tab="${id}">${label}</button>`).join('')}
+        <button data-action="open-week-planner">Week Planner</button>
+        <button data-action="logout">Logout</button>
+      </div>
+    </aside>
+    <main class="main">
+      <div class="topbar">
+        <div>
+          <h1>${escapeHtml(tabTitle(activeTab))}</h1>
+          <div class="meta">${escapeHtml(new Date().toLocaleDateString('en-GB', {weekday:'long', year:'numeric', month:'long', day:'numeric'}))}</div>
+        </div>
+        <div class="actions">
+          <span id="cloud-status-badge" class="badge ${cloudEnabled() ? 'ok' : 'under'}">Cloud</span>
+          <span class="badge">Auto-save</span>
+          <button class="small" data-action="sync-now">Sync Now</button>
+        </div>
+      </div>
+      <div class="content" id="content"></div>
+      <footer class="appfoot">Hospitality Operations Platform — simple build for Netlify. You can connect shared data later, but the app opens and works now.</footer>
+    </main>
+  </div>
+  `;
+}
+function tabTitle(tab){
+  return ({dashboard:'Dashboard',quotes:'Quotes',orders:'Catering Orders',wastage:'Wastage',items:'Price List',budgets:'Budgets',hr:'HR',logs:'Logs',settings:'Settings'})[tab] || 'Platform';
+}
+
+function renderActive(){
+  const c = document.getElementById('content');
+  if(!c) return;
+  if(activeTab === 'dashboard') c.innerHTML = renderDashboard();
+  else if(activeTab === 'quotes') c.innerHTML = renderQuotes();
+  else if(activeTab === 'orders') c.innerHTML = renderOrders();
+  else if(activeTab === 'wastage') c.innerHTML = renderWastage();
+  else if(activeTab === 'items') c.innerHTML = renderItems();
+  else if(activeTab === 'budgets') c.innerHTML = renderBudgets();
+  else if(activeTab === 'hr') c.innerHTML = renderHR();
+  else if(activeTab === 'logs') c.innerHTML = renderLogs();
+  else if(activeTab === 'settings') c.innerHTML = renderSettings();
+  bindActive();
+}
+
+function monthlyRevenue(month){
+  return state.quotes.filter(q => (q.date_day1 || '').startsWith(month)).reduce((a,q)=>a + Number(q.total_ex_vat||0), 0);
+}
+function monthlyCost(month){
+  return monthlyExpenses(month);
+}
+function linePurchaseCost(line){
+  if(!line) return 0;
+  const itemName = String(line.item || line.name || '').trim().toLowerCase();
+  if(itemName){
+    const found = state.items.find(i => String(i.name || '').trim().toLowerCase() === itemName);
+    if(found) return Number(found.purchase_price || 0);
+  }
+  const direct = Number(line.purchase_price ?? line.unit_cost ?? line.cost_price ?? line.cost ?? NaN);
+  if(Number.isFinite(direct) && direct > 0) return direct;
+  return 0;
+}
+function lineSpend(line){
+  return Number(line.qty || 0) * linePurchaseCost(line);
+}
+function quoteHospitalitySpend(q){
+  const q1 = (q.day1_lines || []).reduce((a, l) => a + lineSpend(l), 0);
+  const q2 = (q.day2_lines || []).reduce((a, l) => a + lineSpend(l), 0);
+  const q3 = (q.day3_lines || []).reduce((a, l) => a + lineSpend(l), 0);
+  return q1 + q2 + q3;
+}
+function monthlyHospitalitySpend(month){
+  const monthQuotes = state.quotes.filter(q => (q.date_day1 || '').startsWith(month) || (q.date_day2 || '').startsWith(month) || (q.date_day3 || '').startsWith(month));
+  return monthQuotes.reduce((sum, q) => sum + quoteHospitalitySpend(q), 0);
+}
+function monthlyOrders(month){
+  return state.orders.filter(o => (o.date || '').startsWith(month)).reduce((a,o)=>a + Number(o.cost||0), 0);
+}
+function monthlyWastage(month){
+  return state.wastage.filter(w => (w.date || '').startsWith(month)).reduce((a,w)=>a + Number(w.value||0), 0);
+}
+function monthlyExpenses(month){
+  return monthlyHospitalitySpend(month) + monthlyOrders(month) + monthlyWastage(month);
+}
+function monthShift(month, delta){
+  const [y, m] = String(month || monthKey()).split('-').map(Number);
+  const d = new Date((y || new Date().getFullYear()), ((m || 1) - 1), 1);
+  d.setMonth(d.getMonth() + Number(delta || 0));
+  return d.toISOString().slice(0, 7);
+}
+function financeTrendRows(baseMonth = monthKey(), count = 6){
+  const rows = [];
+  for(let i = count - 1; i >= 0; i--){
+    const m = monthShift(baseMonth, -i);
+    const rev = monthlyRevenue(m);
+    const hosp = monthlyHospitalitySpend(m);
+    const ord = monthlyOrders(m);
+    const wast = monthlyWastage(m);
+    const exp = hosp + ord + wast;
+    const net = rev - exp;
+    const prev = monthShift(m, -1);
+    const prevNet = monthlyRevenue(prev) - (monthlyHospitalitySpend(prev) + monthlyOrders(prev) + monthlyWastage(prev));
+    rows.push({ month: m, rev, hosp, ord, wast, exp, net, delta: net - prevNet });
+  }
+  return rows;
+}
+function renderMonthlyMovementTable(baseMonth = monthKey(), count = 6){
+  const rows = financeTrendRows(baseMonth, count);
+  return `
+    <div class="card" style="margin-top:1rem">
+      <h2>Monthly revenue & expenses</h2>
+      <div class="tablewrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Month</th>
+              <th>Revenue</th>
+              <th>Hospitality spend</th>
+              <th>Orders</th>
+              <th>Wastage</th>
+              <th>Expenses</th>
+              <th>Net</th>
+              <th>MoM</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows.map(r => `
+              <tr>
+                <td><strong>${monthLabel(r.month)}</strong></td>
+                <td>${fmtMoney(r.rev)}</td>
+                <td>${fmtMoney(r.hosp)}</td>
+                <td>${fmtMoney(r.ord)}</td>
+                <td>${fmtMoney(r.wast)}</td>
+                <td><strong>${fmtMoney(r.exp)}</strong></td>
+                <td><strong>${fmtMoney(r.net)}</strong></td>
+                <td class="${r.delta >= 0 ? 'pos' : 'neg'}">${r.delta >= 0 ? '▲ ' : '▼ '}${fmtMoney(Math.abs(r.delta))}</td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>`;
+}
+function overBudgetCategories(month){
+  const budgetCats = ['Pantry Breakfast Items','Fruit','Tea/Coffee','Brunch Offer','Hot Lunch','Free Issue Snacks','Hospitality','Vending Machine'];
+  return budgetCats.filter(cat => {
+    const b = budgetFor(month, cat);
+    const actual = actualFor(month, cat);
+    return b > 0 && actual > b;
+  }).length;
+}
+function budgetFor(month, cat){
+  const b = state.budgets.find(x => x.month === month && x.category === cat);
+  return b ? Number(b.monthly_budget || 0) : 0;
+}
+function actualFor(month, cat){
+  return state.orders.filter(o => (o.date || '').startsWith(month) && o.category === cat).reduce((a,o)=>a+Number(o.cost||0),0);
+}
+function grossProfitPct(month){
+  const rev = monthlyRevenue(month);
+  const cost = monthlyCost(month);
+  return rev ? ((rev - cost) / rev) * 100 : 0;
+}
+function todayQuotes(){
+  const today = isoDate();
+  return state.quotes.filter(q => (q.date_day1 === today) || (q.date_day2 === today) || (q.date_day3 === today));
+}
+function openQuotes(){ return state.quotes.filter(q => (q.status || 'Draft') !== 'Confirmed'); }
+function pendingInvoices(){ return state.invoices.filter(i => (i.status || 'Draft') === 'Draft'); }
+function ordersNotReceived(){ return state.orders.filter(o => !o.received); }
+function alertsData(){
+  const month = monthKey();
+  const highWaste = state.wastage.filter(w => (w.date || '').startsWith(weekStart(isoDate()))).reduce((a,w)=>a+Number(w.value||0),0);
+  const overrun = overBudgetCategories(month);
+  const oldOrders = state.orders.filter(o => !o.received && daysBetween(o.date, isoDate()) > 3);
+  return {highWaste, overrun, oldOrders};
+}
+function daysBetween(a,b){ if(!a || !b) return 0; const A = new Date(a+'T00:00:00'); const B = new Date(b+'T00:00:00'); return Math.floor((B-A)/(1000*60*60*24)); }
+function weekStart(d){
+  const date = new Date((d || isoDate()) + 'T00:00:00');
+  const day = date.getDay();
+  const diff = date.getDate() - day + (day===0 ? -6 : 1);
+  const monday = new Date(date.setDate(diff));
+  return monday.toISOString().slice(0,10);
+}
+function weekStartMonday(d){
+  return weekStart(d || isoDate());
+}
+function weekDaysFrom(startIso){
+  const start = new Date((startIso || weekStartMonday(isoDate())) + 'T00:00:00');
+  return Array.from({length:7}, (_, i) => {
+    const dt = new Date(start);
+    dt.setDate(start.getDate() + i);
+    return {
+      key: dt.toISOString().slice(0,10),
+      label: dt.toLocaleDateString('en-GB', {weekday:'short', day:'2-digit', month:'short'})
+    };
+  });
+}
+function plannerStore(){
+  try { return JSON.parse(state.settings.week_plans_json || '{}') || {}; }
+  catch (e) { return {}; }
+}
+function savePlannerStore(store){
+  state.settings.week_plans_json = JSON.stringify(store || {});
+  saveState();
+}
+function getPlannerWeek(startIso){
+  const store = plannerStore();
+  return store[startIso] || { notes:'', rows:{} };
+}
+function setPlannerNotes(startIso, notes){
+  const store = plannerStore();
+  if(!store[startIso]) store[startIso] = { notes:'', rows:{} };
+  store[startIso].notes = notes;
+  savePlannerStore(store);
+}
+function setPlannerCell(startIso, row, day, value){
+  const store = plannerStore();
+  if(!store[startIso]) store[startIso] = { notes:'', rows:{} };
+  if(!store[startIso].rows[row]) store[startIso].rows[row] = {};
+  store[startIso].rows[row][day] = value;
+  savePlannerStore(store);
+}
+function dateInRange(dateStr, startIso, endIso){
+  if(!dateStr) return false;
+  const d = new Date(dateStr + 'T00:00:00').getTime();
+  const s = new Date(startIso + 'T00:00:00').getTime();
+  const e = new Date(endIso + 'T23:59:59').getTime();
+  return d >= s && d <= e;
+}
+function planningWeekSummary(startIso){
+  const start = startIso || weekStartMonday(isoDate());
+  const endDate = new Date(start + 'T00:00:00');
+  endDate.setDate(endDate.getDate() + 6);
+  const end = endDate.toISOString().slice(0,10);
+  const weekQuotes = state.quotes.filter(q => [q.date_day1, q.date_day2, q.date_day3].some(d => dateInRange(d, start, end)));
+  return {
+    quotes: weekQuotes.length,
+    value: weekQuotes.reduce((a, q) => a + Number(q.total_ex_vat || 0), 0),
+    hospitality: weekQuotes.reduce((a, q) => a + quoteHospitalitySpend(q), 0)
+  };
+}
+function renderDashboard(){
+  const month = monthKey();
+  const rev = monthlyRevenue(month);
+  const gp = grossProfitPct(month);
+  const spend = monthlyHospitalitySpend(month);
+  const over = overBudgetCategories(month);
+  const waste = monthlyWastage(month);
+  const al = alertsData();
+
+  if(dashboardView === 'planner'){
+    const start = dashboardPlannerStart || weekStartMonday(isoDate());
+    const week = getPlannerWeek(start);
+    const days = weekDaysFrom(start);
+    const plannerRows = WEEK_PLANNER_ROWS.map(row => `
+      <tr>
+        <th>${escapeHtml(row)}</th>
+        ${days.map(d => {
+          const value = (week.rows[row] && week.rows[row][d.key]) ? week.rows[row][d.key] : '';
+          return `<td><input class="week-plan-input week-plan-cell" data-week-start="${start}" data-week-row="${escapeHtml(row)}" data-week-day="${d.key}" value="${escapeHtml(value)}" placeholder="Add note"></td>`;
+        }).join('')}
+      </tr>`).join('');
+    const summary = planningWeekSummary(start);
+    return `
+      <div class="dashboard-subtabs">
+        <button class="${dashboardView==='overview' ? 'active' : ''}" data-dashboard-view="overview">Overview</button>
+        <button class="${dashboardView==='planner' ? 'active' : ''}" data-dashboard-view="planner">Week Planner</button>
+      </div>
+      <div class="card">
+        <h2>Week Planner</h2>
+        <div class="week-planner-toolbar">
+          <button class="small" data-action="planner-prev-week">◀ Prev week</button>
+          <button class="small" data-action="planner-this-week">This week</button>
+          <button class="small" data-action="planner-next-week">Next week ▶</button>
+          <div style="min-width:240px;flex:1">
+            <label>Week starting</label>
+            <input id="plannerWeekStart" type="date" value="${start}">
+          </div>
+          <div class="pill">Quotes: ${summary.quotes}</div>
+          <div class="pill">Value: ${fmtMoney(summary.value)}</div>
+          <div class="pill">Hospitality spend: ${fmtMoney(summary.hospitality)}</div>
+        </div>
+        <div class="tablewrap">
+          <table class="week-plan-table">
+            <thead>
+              <tr>
+                <th style="width:220px">Row</th>
+                ${days.map(d => `<th>${escapeHtml(d.label)}</th>`).join('')}
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th>Days</th>
+                ${days.map(d => `<td><strong>${escapeHtml(d.label)}</strong></td>`).join('')}
+              </tr>
+              ${plannerRows}
+            </tbody>
+          </table>
+        </div>
+        <div style="margin-top:1rem">
+          <label>Week notes</label>
+          <textarea id="plannerWeekNotes" placeholder="General notes for this week">${escapeHtml(week.notes || '')}</textarea>
+          <small class="hint">This planner is stored inside Settings and syncs with Google Sheets.</small>
+        </div>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="dashboard-subtabs">
+      <button class="${dashboardView==='overview' ? 'active' : ''}" data-dashboard-view="overview">Overview</button>
+      <button class="${dashboardView==='planner' ? 'active' : ''}" data-dashboard-view="planner">Week Planner</button>
+      <button class="small" data-action="open-week-planner">Open Week Planner</button>
+    </div>
+    <div class="kpis">
+      <div class="kpi"><div class="label">Monthly Revenue</div><div class="value">${fmtMoney(rev)}</div></div>
+      <div class="kpi"><div class="label">Gross Profit %</div><div class="value ${moneyStatusClass(gp)}">${gp.toFixed(1)}%</div></div>
+      <div class="kpi"><div class="label">Hospitality Spend</div><div class="value">${fmtMoney(spend)}</div></div>
+      <div class="kpi"><div class="label">Over Budget Categories</div><div class="value ${over ? 'neg' : 'pos'}">${over}</div></div>
+      <div class="kpi"><div class="label">Wastage This Month</div><div class="value">${fmtMoney(waste)}</div></div>
+    </div>
+    <div class="grid cols-2" style="margin-top:1rem">
+      <div class="card">
+        <h2>Daily snapshot</h2>
+        ${listBlock('Today\'s events', todayQuotes().map(q=>`${q.quote_ref} — ${q.event_name} (${q.client_company})`))}
+        ${listBlock('Open quotes', openQuotes().slice(0,6).map(q=>`${q.quote_ref} — ${q.event_name}`))}
+        ${listBlock('Pending invoices', pendingInvoices().slice(0,6).map(i=>`${i.invoice_no} — ${i.event_name} (${i.status})`))}
+        ${listBlock('Orders not received', ordersNotReceived().slice(0,6).map(o=>`${o.date} — ${o.supplier} (${o.category})`))}
+        ${listBlock('Wastage this week', state.wastage.filter(w => (w.date||'')>=weekStart(isoDate())).slice(0,6).map(w=>`${w.date} — ${w.item} ${fmtMoney(w.value)}`))}
+      </div>
+      <div class="card">
+        <h2>Alerts</h2>
+        <div class="notice ${al.overrun ? 'danger' : 'warn'}">${al.overrun ? `Budget over-run on ${al.overrun} categories this month.` : 'No budget over-runs at the moment.'}</div>
+        <div class="notice warn">Missing invoices: review draft items in the invoicing log.</div>
+        <div class="notice warn">Unpaid quotes: check saved quotes awaiting confirmation.</div>
+        <div class="notice ${al.highWaste > 100 ? 'danger' : 'warn'}">High wastage week: ${fmtMoney(al.highWaste)} ${al.highWaste > 100 ? '(over £100)' : ''}</div>
+        <div class="notice ${al.oldOrders.length ? 'warn' : ''}">Deliveries not received &gt; 3 days old: ${al.oldOrders.length}</div>
+      </div>
+    </div>
+    ${renderMonthlyMovementTable(month, 6)}
+  `;
+}
+function renderDashboardPlanner(startIso){
+  const start = startIso || dashboardPlannerStart || weekStartMonday(isoDate());
+  dashboardPlannerStart = start;
+  activeTab = 'dashboard';
+  dashboardView = 'planner';
+  const store = plannerStore();
+  if(!store[start]) store[start] = { notes:'', rows:{} };
+  savePlannerStore(store);
+  renderActive();
+}
+
+function listBlock(title, items){
+  return `<div style="margin:.75rem 0"><strong>${title}</strong><div style="margin-top:.35rem">${items.length ? items.map(i=>`<div class="pill" style="display:block;margin:.25rem 0">${escapeHtml(i)}</div>`).join('') : '<div class="pill">None</div>'}</div></div>`;
+}
+
+function setQuoteViewTab(tab){
+  quoteViewTab = tab;
+  renderActive();
+}
+function quoteStatusLabelClass(status){
+  const s = String(status || 'Saved');
+  if (s === 'Confirmed' || s === 'Paid') return 'ok';
+  if (s === 'Invoiced') return 'under';
+  if (s === 'Cancelled') return 'over';
+  return 'badge';
+}
+function quoteHistoryFiltered(){
+  const term = (document.getElementById('quoteSearch')?.value || '').toLowerCase();
+  const month = document.getElementById('quoteMonth')?.value || monthKey();
+  const status = document.getElementById('quoteStatus')?.value || 'All';
+  return state.quotes
+    .slice()
+    .sort((a,b) => String(b.created_at || '').localeCompare(String(a.created_at || '')))
+    .filter(q => (q.date_day1 || '').startsWith(month))
+    .filter(q => status === 'All' ? true : String(q.status || 'Saved') === status)
+    .filter(q => !term || `${q.quote_ref} ${q.event_name} ${q.client_company} ${q.room_location} ${q.cost_code}`.toLowerCase().includes(term));
+}
+function renderQuotes(){
+  const q = quoteDraft;
+  const calc = quoteCalc(q);
+  const history = quoteHistoryFiltered();
+  const historyCount = state.quotes.length;
+  const historyValue = history.reduce((a, item) => a + Number(item.total_ex_vat || 0), 0);
+
+  const dayCard = (day, border, heading, lines, dateField) => {
+    const hasItems = (lines || []).some(l => l && (Number(l.qty) || 0 || l.item || l.price));
+    const hasDate = !!q[dateField];
+    if (day > 1 && !hasDate && !hasItems) return '';
+    const dayClass = day === 1 ? 'card quote-day-card quote-day-card-day1' : 'card quote-day-card';
+    return `
+    <div class="${dayClass}" style="border-left:4px solid ${border};box-shadow:none">
+      <h3>${heading}<span id="quote-day-label-${day}">${q[dateField] ? ' — ' + fmtDate(q[dateField]) : ''}</span></h3>
+      <div id="day${day}_lines">${renderQuoteLines(lines, day)}</div>
+      <div class="actions" style="margin-top:.35rem"><button class="small" data-action="add-quote-line" data-day="${day}">Add line</button></div>
+      <div class="notice" style="margin-top:.65rem;margin-bottom:0"><strong>Day total:</strong> £<span id="quote-day-total-${day}">${quoteLinesTotal(lines).toFixed(2)}</span></div>
+    </div>`;
+  };
+
+  const summaryBar = `
+    <div class="grid cols-4" style="margin-top:1rem">
+      <div class="card" style="box-shadow:none"><div class="label">Subtotal</div><div class="value" id="quote-subtotal">${fmtMoney(calc.subtotal)}</div></div>
+      <div class="card" style="box-shadow:none"><div class="label">Management Fee (${Number(state.settings.management_fee_pct||0.12)*100}%)</div><div class="value" id="quote-fee">${fmtMoney(calc.fee)}</div></div>
+      <div class="card" style="box-shadow:none"><div class="label">Total ex VAT</div><div class="value" id="quote-total">${fmtMoney(calc.total)}</div></div>
+      <div class="card" style="box-shadow:none"><div class="label">Quote Ref</div><div class="value" id="quote-ref">${escapeHtml(q.quote_ref || '—')}</div></div>
+    </div>`;
+
+  const templateButtons = `
+    <div class="actions" style="margin-top:1rem;flex-wrap:wrap">
+      <button class="small ghost" data-action="load-template" data-template="breakfast">🥐 Breakfast for 20</button>
+      <button class="small ghost" data-action="load-template" data-template="exec-lunch">🥗 Executive Lunch</button>
+      <button class="small ghost" data-action="load-template" data-template="town-hall">🏛 Town Hall Event</button>
+      <button class="small ghost" data-action="load-template" data-template="drinks">🥂 Drinks Reception</button>
+    </div>`;
+
+  const newQuotePane = `
+    <div class="card">
+      <h2>New quote</h2>
+      <div class="grid cols-2">
+        <div><label>Event Name *</label><input id="q_event_name" value="${escapeHtml(q.event_name)}"></div>
+        <div><label>Client / Company *</label><input id="q_client_company" value="${escapeHtml(q.client_company)}"></div>
+        <div><label>Date Day 1 *</label><input id="q_date_day1" type="date" value="${q.date_day1}"></div>
+        <div><label>No. of Guests *</label><input id="q_guests" type="number" min="1" value="${escapeHtml(q.guests)}"></div>
+        <div><label>Date Day 2</label><input id="q_date_day2" type="date" value="${q.date_day2}"></div>
+        <div><label>Date Day 3</label><input id="q_date_day3" type="date" value="${q.date_day3}"></div>
+        <div><label>Room / Location *</label>
+          <select id="q_room_location">
+            <option value="">Select...</option>
+            ${ROOMS.map(r => `<option ${q.room_location===r?'selected':''} value="${escapeHtml(r)}">${escapeHtml(r)}</option>`).join('')}
+          </select>
+        </div>
+        <div id="quote-room-other-wrap" style="display:${q.room_location==='Other' ? '' : 'none'}"><label>Other room</label><input id="q_room_other" value="${escapeHtml(q.room_other)}"></div>
+        <div><label>Style / Type</label><input id="q_style_type" value="${escapeHtml(q.style_type)}"></div>
+        <div><label>Organiser</label><input id="q_organiser" value="${escapeHtml(q.organiser)}"></div>
+        <div><label>Allergen / Dietary</label><input id="q_allergen_dietary" value="${escapeHtml(q.allergen_dietary)}"></div>
+        <div><label>Cost Code / GL</label><input id="q_cost_code" value="${escapeHtml(q.cost_code)}"></div>
+      </div>
+      <div style="margin-top:.8rem"><label>Notes</label><textarea id="q_notes">${escapeHtml(q.notes)}</textarea></div>
+      <div class="quote-day-layout" style="margin-top:1rem">
+        <div class="quote-day-main">${dayCard(1, '#1A3A5C', 'Day 1', q.day1_lines, 'date_day1')}</div>
+        <div class="grid cols-2" style="gap:1rem">
+          ${[dayCard(2, '#1A5C38', 'Day 2', q.day2_lines, 'date_day2'), dayCard(3, '#B8974A', 'Day 3', q.day3_lines, 'date_day3')].filter(Boolean).join('')}
+        </div>
+      </div>
+      ${summaryBar}
+      <div class="actions" style="margin-top:1rem;flex-wrap:wrap">
+        <button class="primary" data-action="save-quote">Save quote</button>
+        <button data-action="preview-quote">Preview & Print</button>
+        <button data-action="reset-quote">Clear</button>
+        <button class="small ghost" data-action="show-day" data-day="2">Add Day 2</button>
+        <button class="small ghost" data-action="show-day" data-day="3">Add Day 3</button>
+      </div>
+      ${templateButtons}
+    </div>`;
+
+  const historyPane = `
+    <div class="card">
+      <h2>Quote history <span class="pill">${historyCount}</span></h2>
+      <div class="grid cols-3">
+        <div><label>Search</label><input id="quoteSearch" placeholder="Client, event, ref, room, cost code"></div>
+        <div><label>Month</label><input id="quoteMonth" type="month" value="${monthKey()}"></div>
+        <div><label>Status</label>
+          <select id="quoteStatus">
+            ${['All','Draft','Saved','Confirmed','Invoiced','Paid','Cancelled'].map(s => `<option ${s==='All'?'selected':''} value="${s}">${s}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+      <div class="tablewrap" style="margin-top:1rem">
+        <table>
+          <thead><tr><th>Ref</th><th>Event</th><th>Client</th><th>Date</th><th>Room</th><th>Cost Code</th><th>Subtotal</th><th>Fee</th><th>Total</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody>
+            ${history.length ? history.map(q => `
+              <tr>
+                <td><strong>${escapeHtml(q.quote_ref)}</strong></td>
+                <td>${escapeHtml(q.event_name)}</td>
+                <td>${escapeHtml(q.client_company)}</td>
+                <td>${escapeHtml(fmtDate(q.date_day1))}</td>
+                <td>${escapeHtml(q.room_location === 'Other' ? q.room_other : q.room_location || '')}</td>
+                <td>${escapeHtml(q.cost_code || '')}</td>
+                <td>${fmtMoney(q.subtotal)}</td>
+                <td>${fmtMoney(q.mgmt_fee)}</td>
+                <td><strong>${fmtMoney(q.total_ex_vat)}</strong></td>
+                <td><span class="badge ${quoteStatusLabelClass(q.status)}">${escapeHtml(q.status || 'Saved')}</span></td>
+                <td>
+                  <div class="actions">
+                    <button class="small" data-action="load-quote" data-id="${q.id}">Reopen</button>
+                    <button class="small" data-action="print-quote-by-id" data-id="${q.id}">Print</button>
+                    <button class="small danger" data-action="delete-quote" data-id="${q.id}">Delete</button>
+                  </div>
+                </td>
+              </tr>`).join('') : `<tr><td colspan="11">No quotes yet.</td></tr>`}
+          </tbody>
+        </table>
+      </div>
+      <div class="notice" style="margin-top:1rem">Total visible quotes: <strong>${history.length}</strong> · Total value: <strong>${fmtMoney(historyValue)}</strong></div>
+    </div>`;
+
+  const previewPane = `
+    <div class="card">
+      <h2>Preview / Print</h2>
+      <div class="notice">This is the print-ready view. Click Print to open the browser print dialog.</div>
+      ${renderQuotePreview()}
+      <div class="actions" style="margin-top:1rem">
+        <button class="primary" data-action="print-quote">Print</button>
+        <button data-action="quote-tab-new">Back to New Quote</button>
+      </div>
+    </div>`;
+
+  const pane = quoteViewTab === 'history' ? historyPane : quoteViewTab === 'preview' ? previewPane : newQuotePane;
+
+  return `
+    <div class="notice banner">Quote builder supports 3 days, automatic HQ numbering, invoice draft creation, month-end allocation, and logging when saved.</div>
+    <div class="tabs quote-tabs">
+      <button class="${quoteViewTab==='new' ? 'active' : ''}" data-quote-tab="new">New Quote</button>
+      <button class="${quoteViewTab==='history' ? 'active' : ''}" data-quote-tab="history">Quote History (${historyCount})</button>
+      <button class="${quoteViewTab==='preview' ? 'active' : ''}" data-quote-tab="preview">Preview / Print</button>
+    </div>
+    ${pane}
+  `;
+}
+
+function renderQuoteDaySections(q){
+  const sections = [1,2,3].map(day => {
+    const lines = q[`day${day}_lines`] || [];
+    const date = q[`date_day${day}`];
+    const hasItems = lines.some(l => l && (l.qty || l.price || l.item));
+    if(!date && !hasItems) return '';
+    return `
+        <div class="quote-section">
+          <h3>Day ${day}${date ? ` — ${fmtDate(date)}` : ''}</h3>
+          <div class="day-card">
+            <table>
+              <thead><tr><th>Item</th><th>Qty</th><th>Unit</th><th>Line total</th></tr></thead>
+              <tbody>
+                ${hasItems ? lines.filter(l => l && (l.qty || l.price || l.item)).map(l=>`<tr><td>${escapeHtml(l.item||'')}</td><td>${l.qty||0}</td><td>${fmtMoney(l.price||0)}</td><td>${fmtMoney((Number(l.qty)||0)*(Number(l.price)||0))}</td></tr>`).join('') : '<tr><td colspan="4">No items</td></tr>'}
+                <tr><td colspan="3"><strong>Day subtotal</strong></td><td><strong>${fmtMoney(quoteLinesTotal(lines))}</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>`;
+  }).filter(Boolean).join('');
+  return sections;
+}
+
+function renderQuotePreview(){
+  const c = quoteCalc(quoteDraft);
+  const q = quoteDraft;
+  const room = q.room_location === 'Other' ? q.room_other : q.room_location;
+  return `
+    <div class="quote-page" id="quote-preview-block">
+      <div class="quote-header">
+        <div>
+          <h2>${escapeHtml(state.settings.app_name || 'Hospitality Quote')}</h2>
+          <div class="quote-meta">Quote Ref: <strong>${escapeHtml(q.quote_ref || 'Draft')}</strong></div>
+        </div>
+        <div class="quote-meta">
+          <div><strong>Client</strong><br>${escapeHtml(q.client_company || '')}</div>
+          <div style="margin-top:.35rem"><strong>Event</strong><br>${escapeHtml(q.event_name || '')}</div>
+        </div>
+      </div>
+      <div class="quote-section">
+        <div><strong>Date:</strong> ${fmtDate(q.date_day1)} ${q.date_day2 ? ' / ' + fmtDate(q.date_day2) : ''} ${q.date_day3 ? ' / ' + fmtDate(q.date_day3) : ''}</div>
+        <div><strong>Guests:</strong> ${escapeHtml(q.guests || '')}</div>
+        <div><strong>Room:</strong> ${escapeHtml(room || '')}</div>
+        <div><strong>Organiser:</strong> ${escapeHtml(q.organiser || '')}</div>
+        <div><strong>Cost code:</strong> ${escapeHtml(q.cost_code || '')}</div>
+      </div>
+${renderQuoteDaySections(q)}
+      <div class="quote-section">
+        <table>
+          <tbody>
+            <tr><th>Overall subtotal</th><td>${fmtMoney(c.subtotal)}</td></tr>
+            <tr><th>Management fee</th><td>${fmtMoney(c.fee)}</td></tr>
+            <tr><th>Total (ex VAT)</th><td><strong>${fmtMoney(c.total)}</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="footer-note">Prepared for hospitality operations use. This print view intentionally hides app chrome.</div>
+    </div>`;
+}
+function renderQuoteLines(
+lines, dayIndex){
+  return (lines || []).map((line, idx) => `
+    <div class="quote-line-row">
+      <div>
+        <label>Item</label>
+        <select data-quote-day="${dayIndex}" data-quote-line="${idx}" data-field="item">
+          <option value="">Select item</option>
+          ${state.items.map(i => `<option ${line.item===i.name?'selected':''} value="${escapeHtml(i.name)}">${escapeHtml(i.name)}</option>`).join('')}
+        </select>
+      </div>
+      <div>
+        <label>Qty</label>
+        <input type="number" min="0" step="1" data-quote-day="${dayIndex}" data-quote-line="${idx}" data-field="qty" value="${line.qty}">
+      </div>
+      <div>
+        <label>Unit price</label>
+        <input type="number" min="0" step="0.01" data-quote-day="${dayIndex}" data-quote-line="${idx}" data-field="price" value="${Number(line.price||0).toFixed(2)}">
+      </div>
+      <div>
+        <label>Line total</label>
+        <div class="pill line-total-pill">${fmtMoney((Number(line.qty)||0)*(Number(line.price)||0))}</div>
+      </div>
+      <div class="actions">
+        <button class="small danger" data-action="remove-quote-line" data-day="${dayIndex}" data-line="${idx}">Remove</button>
+      </div>
+    </div>`).join('') || '<div class="pill">No lines yet</div>';
+}
+function renderQuotesRows(){
+  const term = (document.getElementById('quoteSearch')?.value || '').toLowerCase();
+  const month = document.getElementById('quoteMonth')?.value || monthKey();
+  const rows = state.quotes.filter(q => (q.date_day1 || '').startsWith(month) && (!term || `${q.quote_ref} ${q.event_name} ${q.client_company}`.toLowerCase().includes(term)));
+  if(!rows.length) return `<tr><td colspan="7">No quotes yet.</td></tr>`;
+  return rows.map(q => `
+    <tr>
+      <td><strong>${escapeHtml(q.quote_ref)}</strong></td>
+      <td>${escapeHtml(q.event_name)}</td>
+      <td>${escapeHtml(q.client_company)}</td>
+      <td>${escapeHtml(fmtDate(q.date_day1))}</td>
+      <td>${fmtMoney(q.total_ex_vat)}</td>
+      <td><span class="badge">${escapeHtml(q.status || 'Saved')}</span></td>
+      <td>
+        <div class="actions">
+          <button class="small" data-action="load-quote" data-id="${q.id}">View</button>
+          <button class="small" data-action="print-quote-by-id" data-id="${q.id}">Print</button>
+          <button class="small danger" data-action="delete-quote" data-id="${q.id}">Delete</button>
+        </div>
+      </td>
+    </tr>`).join('');
+}
+
+function renderOrders(){
+  const month = document.getElementById('orderMonth')?.value || monthKey();
+  const supplier = document.getElementById('orderSupplierFilter')?.value || '';
+  const cat = document.getElementById('orderCatFilter')?.value || '';
+  const term = (document.getElementById('orderSearch')?.value || '').toLowerCase();
+  const rows = state.orders.filter(o => (!month || (o.date||'').startsWith(month)) && (!supplier || o.supplier===supplier) && (!cat || o.category===cat) && (!term || `${o.supplier} ${o.category} ${o.invoice_nr} ${o.notes}`.toLowerCase().includes(term)));
+  return `
+    <div class="card">
+      <h2>Catering orders</h2>
+      <div class="notice">Orders update budgets and are visible in logs. Supervisor can add orders but budget and totals are hidden from that role.</div>
+      <div class="grid cols-4">
+        <div><label>Date</label><input id="orderDate" type="date" value="${isoDate()}"></div>
+        <div><label>Supplier</label>
+          <select id="orderSupplier">
+            <option value="">Select supplier...</option>
+            ${state.suppliers.map(s=>`<option value="${escapeHtml(s.name || s)}">${escapeHtml(s.name || s)}</option>`).join('')}
+          </select>
+        </div>
+        <div><label>Category</label>
+          <select id="orderCategory"><option value="">Select...</option>${ORDER_CATEGORIES.map(c=>`<option>${escapeHtml(c)}</option>`).join('')}</select>
+        </div>
+        <div><label>Invoice no</label><input id="orderInvoice" placeholder="Optional"></div>
+        <div><label>Cost</label><input id="orderCost" type="number" step="0.01" value="0"></div>
+        <div><label>Budgeted</label><input id="orderBudgeted" type="number" step="0.01" value="0"></div>
+        <div><label>Received</label><select id="orderReceived"><option value="false">No</option><option value="true">Yes</option></select></div>
+        <div><label>Notes</label><input id="orderNotes" placeholder="Optional"></div>
+      </div>
+      <div class="actions" style="margin-top:1rem">
+        <button class="primary" data-action="save-order">Add order</button>
+      </div>
+    </div>
+    <div class="card" style="margin-top:1rem">
+      <h3>Filters</h3>
+      <div class="grid cols-4">
+        <div><label>Month</label><input id="orderMonth" type="month" value="${month}"></div>
+        <div><label>Supplier</label>
+          <select id="orderSupplierFilter">
+            <option value="">All suppliers</option>
+            ${state.suppliers.map(s=>`<option value="${escapeHtml(s.name || s)}" ${String(supplier)===String(s.name || s)?'selected':''}>${escapeHtml(s.name || s)}</option>`).join('')}
+          </select>
+        </div>
+        <div><label>Category</label>
+          <select id="orderCatFilter">
+            <option value="">All categories</option>
+            ${ORDER_CATEGORIES.map(c=>`<option value="${escapeHtml(c)}" ${String(cat)===String(c)?'selected':''}>${escapeHtml(c)}</option>`).join('')}
+          </select>
+        </div>
+        <div><label>Search</label><input id="orderSearch" value="${escapeHtml(term)}"></div>
+      </div>
+      <div class="tablewrap" style="margin-top:1rem">
+        <table>
+          <thead><tr><th>Date</th><th>Supplier</th><th>Category</th><th>Invoice</th><th>Cost</th><th>Budgeted</th><th>Received</th><th>Notes</th><th>Actions</th></tr></thead>
+          <tbody>${rows.length ? rows.map(o=>`
+            <tr>
+              <td>${escapeHtml(fmtDate(o.date))}</td>
+              <td>${escapeHtml(o.supplier)}</td>
+              <td>${escapeHtml(o.category)}</td>
+              <td>${escapeHtml(o.invoice_nr || '')}</td>
+              <td>${fmtMoney(o.cost)}</td>
+              <td>${isManager()?fmtMoney(o.budgeted):'<span class="badge">Hidden</span>'}</td>
+              <td>${o.received ? 'Yes' : 'No'}</td>
+              <td>${escapeHtml(o.notes || '')}</td>
+              <td><div class="actions">
+                <button class="small" data-action="edit-order" data-id="${o.id}">Edit</button>
+                <button class="small danger" data-action="delete-order" data-id="${o.id}">Delete</button>
+              </div></td>
+            </tr>`).join('') : '<tr><td colspan="9">No orders.</td></tr>'}
+          </tbody>
+        </table>
+      </div>
+      ${isManager() ? `<div class="notice" style="margin-top:1rem">Manager view shows budget comparisons and can export CSV from Logs or Settings.</div>` : `<div class="notice" style="margin-top:1rem">Supervisor view hides budget columns and totals.</div>`}
+    </div>
+  `;
+}
+function renderWastage(){
+  const month = document.getElementById('wasteMonth')?.value || monthKey();
+  const items = state.items.map(i=>i.name).sort();
+  const rows = state.wastage.filter(w => (!month || (w.date||'').startsWith(month)));
+  const grouped = {};
+  rows.forEach(r => { const m = r.date.slice(0,7); (grouped[m] ||= []).push(r); });
+  return `
+    <div class="card">
+      <h2>Wastage</h2>
+      <div class="notice">Unit cost auto-fills from the price list. Value is calculated from unit cost × quantity.</div>
+      <div class="grid cols-4">
+        <div><label>Date</label><input id="wasteDate" type="date" value="${isoDate()}"></div>
+        <div><label>Item</label><select id="wasteItem"><option value="">Select...</option>${items.map(n=>`<option>${escapeHtml(n)}</option>`).join('')}</select></div>
+        <div><label>Category</label><input id="wasteCategory" placeholder="Auto from item or type manually"></div>
+        <div><label>Qty</label><input id="wasteQty" type="number" step="0.01" value="1"></div>
+        <div><label>Unit</label><select id="wasteUnit">${WASTE_UNITS.map(u=>`<option>${u}</option>`).join('')}</select></div>
+        <div><label>Reason</label><select id="wasteReason">${WASTE_REASONS.map(u=>`<option>${u}</option>`).join('')}</select></div>
+        <div><label>Unit cost</label><input id="wasteUnitCost" type="number" step="0.01" value="0"></div>
+        <div><label>Value</label><input id="wasteValue" type="number" step="0.01" value="0" readonly></div>
+      </div>
+      <div style="margin-top:.8rem"><label>Notes</label><textarea id="wasteNotes"></textarea></div>
+      <div class="actions" style="margin-top:1rem">
+        <button class="primary" data-action="save-wastage">Add wastage</button>
+      </div>
+    </div>
+    <div class="card" style="margin-top:1rem">
+      <h3>Entries grouped by month</h3>
+      <div class="grid cols-4">
+        <div><label>Month</label><input id="wasteMonth" type="month" value="${month}"></div>
+      </div>
+      ${Object.keys(grouped).sort().reverse().map(m => `
+        <div class="card" style="box-shadow:none;margin-top:1rem">
+          <h3>${monthLabel(m)}</h3>
+          <div class="tablewrap">
+            <table>
+              <thead><tr><th>Date</th><th>Item</th><th>Qty</th><th>Unit</th><th>Reason</th><th>Unit cost</th><th>Value</th><th>Notes</th><th>Actions</th></tr></thead>
+              <tbody>
+                ${grouped[m].map(w=>`
+                  <tr>
+                    <td>${escapeHtml(fmtDate(w.date))}</td>
+                    <td>${escapeHtml(w.item)}</td>
+                    <td>${w.qty}</td>
+                    <td>${escapeHtml(w.unit)}</td>
+                    <td>${escapeHtml(w.reason)}</td>
+                    <td>${fmtMoney(w.unit_cost)}</td>
+                    <td>${fmtMoney(w.value)}</td>
+                    <td>${escapeHtml(w.notes || '')}</td>
+                    <td><div class="actions">
+                      <button class="small" data-action="edit-wastage" data-id="${w.id}">Edit</button>
+                      <button class="small danger" data-action="delete-wastage" data-id="${w.id}">Delete</button>
+                    </div></td>
+                  </tr>`).join('')}
+                <tr><td colspan="6"><strong>Monthly total</strong></td><td colspan="3"><strong>${fmtMoney(grouped[m].reduce((a,w)=>a+Number(w.value||0),0))}</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `).join('') || '<div class="notice">No wastage records yet.</div>'}
+    </div>`;
+}
+function renderItems(){
+  return `
+    <div class="card">
+      <h2>Price list</h2>
+      <div class="notice">This is the source of truth for quote prices and wastage costs. Enter Purchase price and Markup % — Sell price calculates automatically.</div>
+      <div class="grid cols-4">
+        <div><label>Name</label><input id="itemName" value=""></div>
+        <div><label>Category</label><input id="itemCategory" value=""></div>
+        <div><label>Purchase price</label><input id="itemPurchase" type="number" step="0.01" value="0"></div>
+        <div><label>Markup %</label><input id="itemMarkup" type="number" step="0.01" value="20"></div>
+        <div><label>Sell price</label><input id="itemSell" type="number" step="0.01" value="0" readonly></div>
+        <div class="grid" style="grid-column:span 2"><label>Description</label><input id="itemDesc" value=""></div>
+      </div>
+      <small class="hint">Sell price is calculated as Purchase ÷ (1 − Markup).</small>
+      <div class="actions" style="margin-top:1rem">
+        <button class="primary" data-action="save-item">Save item</button>
+        <button data-action="reset-item-form">Clear form</button>
+      </div>
+    </div>
+    <div class="card" style="margin-top:1rem">
+      <h3>Items</h3>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Name</th><th>Category</th><th>Purchase</th><th>Markup</th><th>Sell</th><th>Description</th><th>Actions</th></tr></thead>
+          <tbody>${state.items.map((i,idx)=>`
+            <tr>
+              <td>${escapeHtml(i.name)}</td>
+              <td>${escapeHtml(i.category)}</td>
+              <td>${fmtMoney(i.purchase_price)}</td>
+              <td>${(Number(i.markup_pct||0)*100).toFixed(0)}%</td>
+              <td>${fmtMoney(i.sell_price)}</td>
+              <td>${escapeHtml(i.description || '')}</td>
+              <td><div class="actions">
+                <button class="small" data-action="edit-item" data-index="${idx}">Edit</button>
+                <button class="small danger" data-action="delete-item" data-index="${idx}">Delete</button>
+              </div></td>
+            </tr>`).join('')}</tbody>
+        </table>
+      </div>
+    </div>`;
+}
+function budgetMonthList(){
+  const months = Array.from(new Set(state.budgets.map(b => b.month).filter(Boolean)));
+  const current = monthKey();
+  if(!months.includes(current)) months.push(current);
+  return months.sort();
+}
+function seedBudgetMonth(targetMonth, templateMonth = null){
+  const sourceMonth = templateMonth || monthShift(targetMonth, -1);
+  ORDER_CATEGORIES.forEach(cat => {
+    const existing = state.budgets.find(b => b.month === targetMonth && b.category === cat);
+    if(!existing){
+      state.budgets.push({
+        month: targetMonth,
+        category: cat,
+        monthly_budget: budgetFor(sourceMonth, cat) || 0
+      });
+    }
+  });
+  saveState();
+  renderActive();
+}
+
+function renderBudgets(){
+  if(!isManager()) return `<div class="card"><h2>Budgets</h2><div class="notice warn">Manager only.</div></div>`;
+  const month = document.getElementById('budgetMonth')?.value || monthKey();
+  const months = budgetMonthList();
+  const rev = monthlyRevenue(month);
+  const hosp = monthlyHospitalitySpend(month);
+  const orders = monthlyOrders(month);
+  const waste = monthlyWastage(month);
+  const expenses = hosp + orders + waste;
+  const net = rev - expenses;
+  const rows = ORDER_CATEGORIES.map(cat => {
+    const budget = budgetFor(month, cat);
+    const actual = actualFor(month, cat);
+    const diff = budget - actual;
+    const status = diff < 0 ? 'Over' : (budget && actual > budget * 0.9 ? 'OK' : 'Under');
+    return {cat,budget,actual,diff,status};
+  });
+
+  return `
+    <div class="card">
+      <h2>Budgets</h2>
+      <div class="week-planner-toolbar" style="margin-bottom:1rem">
+        <button class="small" data-action="budget-prev-month">◀ Prev month</button>
+        <button class="small" data-action="budget-this-month">This month</button>
+        <button class="small" data-action="budget-next-month">Next month ▶</button>
+        <div style="min-width:180px">
+          <label>Month</label>
+          <input id="budgetMonth" type="month" value="${month}">
+        </div>
+        <button class="small" data-action="seed-budget-month">Copy previous month</button>
+      </div>
+      <div class="grid cols-4">
+        <div class="kpi"><div class="label">Revenue</div><div class="value">${fmtMoney(rev)}</div></div>
+        <div class="kpi"><div class="label">Expenses</div><div class="value">${fmtMoney(expenses)}</div></div>
+        <div class="kpi"><div class="label">Net</div><div class="value ${net >= 0 ? 'pos' : 'neg'}">${fmtMoney(net)}</div></div>
+        <div class="kpi"><div class="label">Hospitality spend</div><div class="value">${fmtMoney(hosp)}</div></div>
+      </div>
+      <div style="margin-top:.75rem">
+        ${months.map(m => `<button class="small ${m === month ? 'primary' : ''}" data-action="set-budget-month" data-month="${m}">${monthLabel(m)}</button>`).join(' ')}
+      </div>
+      <div class="tablewrap" style="margin-top:1rem">
+        <table>
+          <thead><tr><th>Category</th><th>Monthly budget</th><th>Actual spend</th><th>Difference</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody>${rows.map(r=>`
+            <tr>
+              <td>${escapeHtml(r.cat)}</td>
+              <td>${fmtMoney(r.budget)}</td>
+              <td>${fmtMoney(r.actual)}</td>
+              <td class="${r.diff>=0?'':'neg'}">${fmtMoney(r.diff)}</td>
+              <td><span class="badge ${r.status==='Over'?'over':r.status==='Under'?'under':'ok'}">${r.status}</span></td>
+              <td><button class="small" data-action="edit-budget" data-month="${month}" data-cat="${escapeHtml(r.cat)}">Edit budget</button></td>
+            </tr>`).join('')}</tbody>
+        </table>
+      </div>
+    </div>`;
+}
+function renderHR(){
+
+  if(!isManager()) return `<div class="card"><h2>HR</h2><div class="notice warn">Manager only.</div></div>`;
+  const month = document.getElementById('hrMonth')?.value || monthKey();
+  return `
+    <div class="card">
+      <h2>HR</h2>
+      <div class="notice">Monthly calendar, leave entries, sickness overview, bank holidays preloaded for England & Wales, and employee start dates shown on the calendar.</div>
+      <div class="grid cols-2">
+        <div><label>Month</label><input id="hrMonth" type="month" value="${month}"></div>
+        <div class="notice warn">Bank holidays are blocked on the calendar below.</div>
+      </div>
+      ${renderCalendar(month)}
+    </div>
+    <div class="grid cols-2" style="margin-top:1rem">
+      <div class="card">
+        <h3>Employees</h3>
+        <div class="grid cols-2">
+          <div><label>Name</label><input id="empName"></div>
+          <div><label>Entitlement days</label><input id="empDays" type="number" step="0.5" value="0"></div>
+          <div><label>Start date</label><input id="empStart" type="date"></div>
+          <div><label>Role</label><input id="empRole"></div>
+          <div class="grid" style="grid-column:span 2"><label>Notes</label><input id="empNotes"></div>
+        </div>
+        <div class="actions" style="margin-top:1rem">
+          <button class="primary" data-action="save-employee">Add employee</button>
+          <button data-action="reset-employee">Clear</button>
+        </div>
+        <div class="tablewrap" style="margin-top:1rem">
+          <table>
+            <thead><tr><th>Name</th><th>Days</th><th>Start</th><th>Notes</th><th>Actions</th></tr></thead>
+            <tbody>${state.employees.map((e,idx)=>`
+              <tr>
+                <td>${escapeHtml(e.name)}</td><td>${e.entitlement_days}</td><td>${fmtDate(e.start_date)}</td><td>${escapeHtml(e.notes||'')}</td>
+                <td><div class="actions"><button class="small" data-action="edit-employee" data-index="${idx}">Edit</button><button class="small danger" data-action="delete-employee" data-index="${idx}">Delete</button></div></td>
+              </tr>`).join('')}</tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Leave log</h3>
+        <div class="grid cols-2">
+          <div><label>Employee</label><select id="leaveEmp">${state.employees.map(e=>`<option value="${escapeHtml(e.name)}">${escapeHtml(e.name)}</option>`).join('')}</select></div>
+          <div><label>Type</label><select id="leaveType"><option>Annual Leave</option><option>Sick Leave</option><option>Bank Holiday</option><option>Other</option></select></div>
+          <div><label>Start</label><input id="leaveStart" type="date"></div>
+          <div><label>End</label><input id="leaveEnd" type="date"></div>
+          <div><label>Notes</label><input id="leaveNotes"></div>
+        </div>
+        <div class="actions" style="margin-top:1rem">
+          <button class="primary" data-action="save-leave">Add leave</button>
+        </div>
+        <div class="tablewrap" style="margin-top:1rem">
+          <table>
+            <thead><tr><th>Employee</th><th>Type</th><th>Dates</th><th>Days</th><th>Notes</th><th>Actions</th></tr></thead>
+            <tbody>${state.leave.map((l,idx)=>`
+              <tr>
+                <td>${escapeHtml(l.employee_name)}</td><td>${escapeHtml(l.type)}</td><td>${fmtDate(l.start_date)} → ${fmtDate(l.end_date)}</td><td>${l.days}</td><td>${escapeHtml(l.notes||'')}</td>
+                <td><button class="small danger" data-action="delete-leave" data-index="${idx}">Delete</button></td>
+              </tr>`).join('') || '<tr><td colspan="6">No leave records.</td></tr>'}</tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:1rem">
+      <h3>Sickness overview</h3>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Employee</th><th>Absences</th><th>Days taken</th></tr></thead>
+          <tbody>${state.employees.map(e=>{
+            const sick = state.leave.filter(l=>l.employee_name===e.name && l.type==='Sick Leave');
+            const days = sick.reduce((a,l)=>a+Number(l.days||0),0);
+            return `<tr><td>${escapeHtml(e.name)}</td><td>${sick.length}</td><td>${days}</td></tr>`;
+          }).join('')}</tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+function renderCalendar(month){
+  const [y,m] = month.split('-').map(Number);
+  const first = new Date(y, m-1, 1);
+  const start = new Date(first); start.setDate(first.getDate() - ((first.getDay()+6)%7));
+  const days = [];
+  for(let i=0;i<42;i++){ const d = new Date(start); d.setDate(start.getDate()+i); days.push(d); }
+  const holidaySet = new Set(state.bank_holidays.map(h => h.date));
+  return `
+  <div class="tablewrap" style="margin-top:1rem">
+    <table>
+      <thead><tr>${['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(d=>`<th>${d}</th>`).join('')}</tr></thead>
+      <tbody>
+      ${Array.from({length:6}, (_,r)=>`
+        <tr>
+          ${days.slice(r*7,r*7+7).map(d=>{
+            const ds = d.toISOString().slice(0,10);
+            const inMonth = d.getMonth() === (m-1);
+            const hol = holidaySet.has(ds);
+            const holidayName = state.bank_holidays.find(h => h.date===ds)?.name || '';
+            const starters = state.employees.filter(e => e.start_date === ds).map(e => e.name);
+            const leaveToday = state.leave.filter(l => dateInRange(ds, l.start_date, l.end_date)).map(l => `${l.employee_name} (${l.type})`);
+            const notes = [];
+            if (holidayName) notes.push(`<div style="font-size:.72rem;color:var(--red)">${escapeHtml(holidayName)}</div>`);
+            if (starters.length) notes.push(`<div style="font-size:.72rem;color:var(--blue)">Start: ${escapeHtml(starters.join(', '))}</div>`);
+            if (leaveToday.length) notes.push(`<div style="font-size:.72rem;color:var(--green)">Leave: ${escapeHtml(leaveToday.join(', '))}</div>`);
+            return `<td style="height:92px;vertical-align:top;background:${!inMonth?'#faf7f2':''};${hol?'outline:2px solid #c99':''}">
+              <strong>${d.getDate()}</strong>
+              ${notes.join('')}
+            </td>`;
+          }).join('')}
+        </tr>`).join('')}
+      </tbody>
+    </table>
+  </div>`;
+}
+function renderLogs(){
+  return `
+    <div class="card">
+      <h2>Logs</h2>
+      <div class="notice">Use these logs to review quotes, orders, wastage, month-end entries and exports.</div>
+      <div class="actions">
+        <button data-action="export-json">Export all JSON</button>
+        <button data-action="download-quotes-csv">Export quotes CSV</button>
+        <button data-action="download-orders-csv">Export orders CSV</button>
+        <button data-action="download-wastage-csv">Export wastage CSV</button>
+        <button data-action="download-invoices-csv">Export invoices CSV</button>
+        <button data-action="download-monthend-csv">Export month-end CSV</button>
+        <button data-action="generate-monthend">Generate month-end</button>
+      </div>
+      <div class="grid cols-2" style="margin-top:1rem">
+        <div><label>Filter month</label><input id="logMonth" type="month" value="${monthKey()}"></div>
+        <div><label>Filter type</label><input id="logType" placeholder="Quote, Order, Wastage"></div>
+      </div>
+      <div class="tablewrap" style="margin-top:1rem">
+        <table>
+          <thead><tr><th>Date</th><th>Type</th><th>Ref</th><th>Description</th><th>Amount</th><th>Status</th></tr></thead>
+          <tbody>${renderLogRows()}</tbody>
+        </table>
+      </div>
+    </div>`;
+}
+function renderLogRows(){
+  const month = document.getElementById('logMonth')?.value || '';
+  const type = (document.getElementById('logType')?.value || '').toLowerCase();
+  const rows = state.logs.filter(l => (!month || (l.date||'').startsWith(month)) && (!type || (l.type||'').toLowerCase().includes(type)));
+  if(!rows.length) return `<tr><td colspan="6">No logs.</td></tr>`;
+  return rows.map(l=>`<tr><td>${escapeHtml(l.date)}</td><td>${escapeHtml(l.type)}</td><td>${escapeHtml(l.ref)}</td><td>${escapeHtml(l.description)}</td><td>${fmtMoney(l.amount)}</td><td>${escapeHtml(l.status)}</td></tr>`).join('');
+}
+function renderSettings(){
+  return `
+    <div class="grid cols-2">
+      <div class="card">
+        <h2>Settings</h2>
+        <div class="grid cols-2">
+          <div><label>App name</label><input id="setAppName" value="${escapeHtml(state.settings.app_name || '')}"></div>
+          <div><label>Management fee %</label><input id="setMgmtFee" type="number" step="0.01" value="${Number(state.settings.management_fee_pct || 0.12)}"></div>
+          <div><label>Manager password</label><input id="setManagerPass" value="${escapeHtml(state.settings.manager_password || '')}"></div>
+          <div><label>Supervisor password</label><input id="setSupervisorPass" value="${escapeHtml(state.settings.supervisor_password || '')}"></div>
+          <div><label>Spreadsheet ID</label><input id="setSheetId" value="${escapeHtml(state.settings.spreadsheet_id || '')}"></div>
+          <div><label>Apps Script URL</label><input id="setScriptUrl" value="${escapeHtml(state.settings.apps_script_url || 'https://script.google.com/a/macros/ebay.com/s/AKfycbyUWBtMT73EwLw6a3Wa12IFWS9h2LcYVBV2N_fKK68xvR2_YQXNuisq3PG9r1fSS0ZU6g/exec')}"></div>
+          <div><label>Sync mode</label>
+            <select id="setSyncMode"><option value="cloud" ${state.settings.sync_mode==='cloud'?'selected':''}>Cloud sync</option><option value="local" ${state.settings.sync_mode==='local'?'selected':''}>Local only</option></select>
+          </div>
+          <div><label>Backup reminder time</label><input id="setBackupTime" type="time" value="${String(state.settings.backup_reminder_hour).padStart(2,'0')}:${String(state.settings.backup_reminder_minute).padStart(2,'0')}"></div>
+        </div>
+        <div class="actions" style="margin-top:1rem">
+          <button class="primary" data-action="save-settings">Save settings</button>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Backup & restore</h2>
+        <div class="actions">
+          <button data-action="export-json">Download JSON backup</button>
+          <button data-action="reset-to-seed" class="danger">Reset all data</button>
+        </div>
+        <div style="margin-top:1rem">
+          <label>Restore from JSON</label>
+          <input id="restoreFile" type="file" accept="application/json">
+          <small class="hint">Upload a backup JSON to replace the current local data.</small>
+        </div>
+        <div class="notice warn" style="margin-top:1rem">Daily reminder at 16:00 is shown here as a browser notification prompt only. Browsers may block popups until permission is granted.</div>
+      </div>
+    </div>
+  `;
+}
+
+function bindLogin(){
+  document.getElementById('loginBtn').onclick = () => {
+    const role = document.getElementById('loginRole').value;
+    const pass = document.getElementById('loginPass').value;
+    if(!login(role, pass)){
+      toast('Wrong password. Use the Manager or Supervisor password from Settings.');
+    }
+  };
+  document.getElementById('loginPass').addEventListener('keydown', e => { if(e.key === 'Enter') document.getElementById('loginBtn').click(); });
+}
+function bindShell(){
+  document.querySelectorAll('[data-tab]').forEach(btn => btn.onclick = () => setActiveTab(btn.dataset.tab));
+  document.querySelectorAll('[data-action="logout"]').forEach(btn => btn.onclick = logout);
+  document.querySelectorAll('[data-action="open-week-planner"]').forEach(btn => btn.onclick = () => {
+    activeTab = 'dashboard';
+    dashboardView = 'planner';
+    dashboardPlannerStart = weekStartMonday(isoDate());
+    renderActive();
+  });
+  document.querySelectorAll('[data-action="sync-now"]').forEach(btn => btn.onclick = () => {
+    syncFromCloud().then(() => syncToCloud()).catch(err => setCloudStatus(`Cloud sync failed: ${err.message || err}`, 'error'));
+  });
+}
+function bindActive(){
+  // general filters
+  ['quoteSearch','quoteMonth','orderMonth','orderSupplierFilter','orderCatFilter','orderSearch','wasteMonth','budgetMonth','hrMonth','logMonth','logType'].forEach(id => {
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.addEventListener('input', () => renderActive());
+    if(el.tagName === 'SELECT' || (el.tagName === 'INPUT' && el.type === 'month')) {
+      el.addEventListener('change', () => renderActive());
+    }
+  });
+  // quote form bindings
+  ['q_event_name','q_client_company','q_date_day1','q_date_day2','q_date_day3','q_guests','q_room_location','q_room_other','q_style_type','q_organiser','q_allergen_dietary','q_cost_code','q_notes'].forEach(id => {
+    const el = document.getElementById(id); if(el) el.addEventListener('input', updateQuoteDraft);
+  });
+  const roomSelect = document.getElementById('q_room_location');
+  if(roomSelect) roomSelect.addEventListener('change', () => { quoteDraft.room_location = roomSelect.value; updateQuoteSummaryUI(); });
+  document.querySelectorAll('[data-quote-tab]').forEach(btn => btn.onclick = () => setQuoteViewTab(btn.dataset.quoteTab));
+  document.querySelectorAll('[data-dashboard-view]').forEach(btn => btn.onclick = () => { activeTab = 'dashboard'; dashboardView = btn.dataset.dashboardView; renderActive(); });
+  document.querySelectorAll('[data-action="open-week-planner"]').forEach(btn => btn.onclick = () => { activeTab = 'dashboard'; dashboardView = 'planner'; dashboardPlannerStart = weekStartMonday(isoDate()); renderActive(); });
+  document.querySelectorAll('[data-action="quote-tab-new"]').forEach(btn => btn.onclick = () => setQuoteViewTab('new'));
+  document.querySelectorAll('[data-action="preview-quote"]').forEach(btn => btn.onclick = () => setQuoteViewTab('preview'));
+  document.querySelectorAll('[data-action="planner-prev-week"]').forEach(btn => btn.onclick = () => { const d = new Date((document.getElementById('plannerWeekStart')?.value || dashboardPlannerStart || weekStartMonday(isoDate())) + 'T00:00:00'); d.setDate(d.getDate()-7); renderDashboardPlanner(d.toISOString().slice(0,10)); });
+  document.querySelectorAll('[data-action="planner-this-week"]').forEach(btn => btn.onclick = () => { renderDashboardPlanner(weekStartMonday(isoDate())); });
+  document.querySelectorAll('[data-action="planner-next-week"]').forEach(btn => btn.onclick = () => { const d = new Date((document.getElementById('plannerWeekStart')?.value || dashboardPlannerStart || weekStartMonday(isoDate())) + 'T00:00:00'); d.setDate(d.getDate()+7); renderDashboardPlanner(d.toISOString().slice(0,10)); });
+  document.querySelectorAll('[data-action="budget-prev-month"]').forEach(btn => btn.onclick = () => { const m = document.getElementById('budgetMonth')?.value || monthKey(); const prev = monthShift(m, -1); const el = document.getElementById('budgetMonth'); if(el) el.value = prev; renderActive(); });
+  document.querySelectorAll('[data-action="budget-this-month"]').forEach(btn => btn.onclick = () => { const el = document.getElementById('budgetMonth'); if(el) el.value = monthKey(); renderActive(); });
+  document.querySelectorAll('[data-action="budget-next-month"]').forEach(btn => btn.onclick = () => { const m = document.getElementById('budgetMonth')?.value || monthKey(); const next = monthShift(m, 1); const el = document.getElementById('budgetMonth'); if(el) el.value = next; renderActive(); });
+  document.querySelectorAll('[data-action="set-budget-month"]').forEach(btn => btn.onclick = () => { const el = document.getElementById('budgetMonth'); if(el) el.value = btn.dataset.month; renderActive(); });
+  document.querySelectorAll('[data-action="seed-budget-month"]').forEach(btn => btn.onclick = () => { const target = document.getElementById('budgetMonth')?.value || monthKey(); seedBudgetMonth(target); });
+  const plannerWeekStart = document.getElementById('plannerWeekStart');
+  if(plannerWeekStart) plannerWeekStart.addEventListener('change', () => renderDashboardPlanner(plannerWeekStart.value || weekStartMonday(isoDate())));
+  const plannerWeekNotes = document.getElementById('plannerWeekNotes');
+  if(plannerWeekNotes) plannerWeekNotes.addEventListener('input', () => {
+    const startIso = plannerWeekStart ? plannerWeekStart.value : weekStartMonday();
+    setPlannerNotes(startIso, plannerWeekNotes.value);
+  });
+  document.querySelectorAll('[data-week-row]').forEach(el => {
+    el.addEventListener('input', () => {
+      const startIso = el.dataset.weekStart;
+      const row = el.dataset.weekRow;
+      const day = el.dataset.weekDay;
+      setPlannerCell(startIso, row, day, el.value);
+    });
+  });
+  document.querySelectorAll('[data-quote-day]').forEach(el => {
+    el.onchange = onQuoteLineChange;
+    el.oninput = onQuoteLineChange;
+  });
+  document.querySelectorAll('[data-action="add-quote-line"]').forEach(btn => btn.onclick = () => {
+    const day = Number(btn.dataset.day);
+    const key = `day${day}_lines`;
+    quoteDraft[key].push({item:'', qty:1, price:0});
+    renderActive();
+  });
+  document.querySelectorAll('[data-action="remove-quote-line"]').forEach(btn => btn.onclick = () => {
+    const day = Number(btn.dataset.day);
+    const idx = Number(btn.dataset.line);
+    const key = `day${day}_lines`;
+    quoteDraft[key].splice(idx,1);
+    if(!quoteDraft[key].length) quoteDraft[key].push({item:'',qty:0,price:0});
+    renderActive();
+  });
+  document.querySelectorAll('[data-action="save-quote"]').forEach(btn => btn.onclick = saveQuote);
+  document.querySelectorAll('[data-action="reset-quote"]').forEach(btn => btn.onclick = () => { quoteDraft = emptyQuoteDraft(); renderActive(); });
+  document.querySelectorAll('[data-action="show-day"]').forEach(btn => btn.onclick = () => {
+    const day = Number(btn.dataset.day);
+    quoteDraft[`day${day}_enabled`] = true;
+    if (!quoteDraft[`date_day${day}`]) quoteDraft[`date_day${day}`] = isoDate();
+    renderActive();
+  });
+  document.querySelectorAll('[data-action="print-quote"]').forEach(btn => btn.onclick = () => { quoteViewTab='preview'; renderActive(); setTimeout(() => window.print(), 250); });
+  document.querySelectorAll('[data-action="load-template"]').forEach(btn => btn.onclick = () => loadTemplate(btn.dataset.template));
+  document.querySelectorAll('[data-action="load-quote"]').forEach(btn => btn.onclick = () => loadQuote(btn.dataset.id));
+  document.querySelectorAll('[data-action="print-quote-by-id"]').forEach(btn => btn.onclick = () => printQuoteById(btn.dataset.id));
+  document.querySelectorAll('[data-action="delete-quote"]').forEach(btn => btn.onclick = () => deleteQuote(btn.dataset.id));
+
+  // Orders
+  document.querySelectorAll('[data-action="save-order"]').forEach(btn => btn.onclick = saveOrder);
+  document.querySelectorAll('[data-action="edit-order"]').forEach(btn => btn.onclick = () => editOrder(btn.dataset.id));
+  document.querySelectorAll('[data-action="delete-order"]').forEach(btn => btn.onclick = () => removeById('orders', btn.dataset.id));
+
+  // Wastage
+  const wasteItem = document.getElementById('wasteItem');
+  if(wasteItem) wasteItem.addEventListener('change', () => {
+    const name = wasteItem.value;
+    const cat = state.items.find(i => i.name === name)?.category || '';
+    const cost = itemCost(name);
+    const unitCost = document.getElementById('wasteUnitCost');
+    const category = document.getElementById('wasteCategory');
+    if(category) category.value = cat;
+    if(unitCost) unitCost.value = cost.toFixed(2);
+    recalcWasteValue();
+  });
+  ['wasteQty','wasteUnitCost'].forEach(id => { const el = document.getElementById(id); if(el) el.addEventListener('input', recalcWasteValue); });
+  document.querySelectorAll('[data-action="save-wastage"]').forEach(btn => btn.onclick = saveWastage);
+  document.querySelectorAll('[data-action="edit-wastage"]').forEach(btn => btn.onclick = () => editWastage(btn.dataset.id));
+  document.querySelectorAll('[data-action="delete-wastage"]').forEach(btn => btn.onclick = () => removeById('wastage', btn.dataset.id));
+
+  // Items
+  const itemPurchaseEl = document.getElementById('itemPurchase');
+  const itemMarkupEl = document.getElementById('itemMarkup');
+  if (itemPurchaseEl) itemPurchaseEl.addEventListener('input', updateItemSellPreview);
+  if (itemMarkupEl) itemMarkupEl.addEventListener('input', updateItemSellPreview);
+  document.querySelectorAll('[data-action="save-item"]').forEach(btn => btn.onclick = saveItem);
+  document.querySelectorAll('[data-action="edit-item"]').forEach(btn => btn.onclick = () => editItem(Number(btn.dataset.index)));
+  document.querySelectorAll('[data-action="delete-item"]').forEach(btn => btn.onclick = () => deleteItem(Number(btn.dataset.index)));
+  document.querySelectorAll('[data-action="reset-item-form"]').forEach(btn => btn.onclick = resetItemForm);
+  updateItemSellPreview();
+
+  // Budgets
+  document.querySelectorAll('[data-action="edit-budget"]').forEach(btn => btn.onclick = () => editBudget(btn.dataset.month, btn.dataset.cat));
+
+  // HR
+  document.querySelectorAll('[data-action="save-employee"]').forEach(btn => btn.onclick = saveEmployee);
+  document.querySelectorAll('[data-action="reset-employee"]').forEach(btn => btn.onclick = resetEmployeeForm);
+  document.querySelectorAll('[data-action="edit-employee"]').forEach(btn => btn.onclick = () => editEmployee(Number(btn.dataset.index)));
+  document.querySelectorAll('[data-action="delete-employee"]').forEach(btn => btn.onclick = () => deleteEmployee(Number(btn.dataset.index)));
+  document.querySelectorAll('[data-action="save-leave"]').forEach(btn => btn.onclick = saveLeave);
+  document.querySelectorAll('[data-action="delete-leave"]').forEach(btn => btn.onclick = () => deleteLeave(Number(btn.dataset.index)));
+
+  // Logs / settings
+  document.querySelectorAll('[data-action="export-json"]').forEach(btn => btn.onclick = exportJson);
+  document.querySelectorAll('[data-action="download-quotes-csv"]').forEach(btn => btn.onclick = () => downloadCsv('quotes_history.csv', quotesCsv()));
+  document.querySelectorAll('[data-action="download-orders-csv"]').forEach(btn => btn.onclick = () => downloadCsv(`orders_${monthKey()}.csv`, ordersCsv()));
+  document.querySelectorAll('[data-action="download-wastage-csv"]').forEach(btn => btn.onclick = () => downloadCsv(`wastage_${monthKey()}.csv`, wastageCsv()));
+  document.querySelectorAll('[data-action="download-invoices-csv"]').forEach(btn => btn.onclick = () => downloadCsv(`invoicing_${monthKey()}.csv`, invoicesCsv()));
+  document.querySelectorAll('[data-action="download-monthend-csv"]').forEach(btn => btn.onclick = () => downloadCsv(`month_end_${monthKey()}.csv`, monthEndCsv()));
+  document.querySelectorAll('[data-action="generate-monthend"]').forEach(btn => btn.onclick = generateMonthEnd);
+  document.querySelectorAll('[data-action="save-settings"]').forEach(btn => btn.onclick = saveSettings);
+  document.querySelectorAll('[data-action="sync-now"]').forEach(btn => btn.onclick = () => {
+    syncFromCloud().then(() => syncToCloud()).catch(err => setCloudStatus(`Cloud sync failed: ${err.message || err}`, 'error'));
+  });
+  document.querySelectorAll('[data-action="reset-to-seed"]').forEach(btn => btn.onclick = resetToSeed);
+  const restore = document.getElementById('restoreFile'); if(restore) restore.onchange = restoreFromFile;
+}
+
+function onQuoteLineChange(ev){
+  const el = ev.target;
+  const day = Number(el.dataset.quoteDay);
+  const idx = Number(el.dataset.quoteLine);
+  const field = el.dataset.field;
+  const key = `day${day}_lines`;
+  if(!quoteDraft[key][idx]) return;
+  if(field === 'item'){
+    quoteDraft[key][idx].item = el.value;
+    quoteDraft[key][idx].price = itemPrice(el.value);
+    const row = el.closest('.grid.cols-3');
+    const priceInput = row?.querySelector('input[data-field="price"]');
+    if (priceInput) priceInput.value = Number(quoteDraft[key][idx].price || 0).toFixed(2);
+  } else if(field === 'qty'){
+    quoteDraft[key][idx].qty = Number(el.value || 0);
+  } else if(field === 'price'){
+    quoteDraft[key][idx].price = Number(el.value || 0);
+  }
+  const row = el.closest('.grid.cols-3');
+  const totalEl = row?.querySelector('.pill');
+  if (totalEl) {
+    totalEl.textContent = fmtMoney((Number(quoteDraft[key][idx].qty)||0)*(Number(quoteDraft[key][idx].price)||0));
+  }
+  updateQuoteSummaryUI();
+}
+function updateQuoteDraft(){
+  quoteDraft.event_name = document.getElementById('q_event_name').value;
+  quoteDraft.client_company = document.getElementById('q_client_company').value;
+  quoteDraft.date_day1 = document.getElementById('q_date_day1').value;
+  quoteDraft.date_day2 = document.getElementById('q_date_day2').value;
+  quoteDraft.date_day3 = document.getElementById('q_date_day3').value;
+  quoteDraft.guests = document.getElementById('q_guests').value;
+  quoteDraft.room_location = document.getElementById('q_room_location').value;
+  quoteDraft.room_other = document.getElementById('q_room_other')?.value || '';
+  quoteDraft.style_type = document.getElementById('q_style_type').value;
+  quoteDraft.organiser = document.getElementById('q_organiser').value;
+  quoteDraft.allergen_dietary = document.getElementById('q_allergen_dietary').value;
+  quoteDraft.cost_code = document.getElementById('q_cost_code').value;
+  quoteDraft.notes = document.getElementById('q_notes').value;
+  updateQuoteSummaryUI();
+}
+function loadTemplate(template){
+  const now = isoDate();
+  const t = {
+    'breakfast': {
+      event_name:'Breakfast for 20', client_company:'', guests:20, room_location:'', date_day1:now, day1_lines:[{item:'Classic Breakfast',qty:20,price:itemPrice('Classic Breakfast')}], day2_lines:[{item:'',qty:0,price:0}], day3_lines:[{item:'',qty:0,price:0}]
+    },
+    'exec-lunch': {
+      event_name:'Executive Lunch', guests:20, date_day1:now, day1_lines:[{item:'Business Lunch',qty:20,price:itemPrice('Business Lunch')}], day2_lines:[{item:'',qty:0,price:0}], day3_lines:[{item:'',qty:0,price:0}]
+    },
+    'town-hall': {
+      event_name:'Town Hall Event', guests:100, date_day1:now, day1_lines:[{item:'Healthy Lunch',qty:100,price:itemPrice('Healthy Lunch')}], day2_lines:[{item:'Snacks (Afternoon)',qty:100,price:itemPrice('Snacks (Afternoon)')}], day3_lines:[{item:'',qty:0,price:0}]
+    },
+    'drinks': {
+      event_name:'Drinks Reception', guests:50, date_day1:now, day1_lines:[{item:'Soft Drinks Selection',qty:2,price:itemPrice('Soft Drinks Selection')},{item:'Bottega Gold Prosecco',qty:10,price:itemPrice('Bottega Gold Prosecco')}], day2_lines:[{item:'',qty:0,price:0}], day3_lines:[{item:'',qty:0,price:0}]
+    }
+  }[template];
+  if(!t) return;
+  quoteDraft = Object.assign(emptyQuoteDraft(), quoteDraft, t);
+  renderActive();
+}
+function saveQuote(){
+  if(!quoteDraft.event_name || !quoteDraft.client_company || !quoteDraft.date_day1 || !quoteDraft.guests || !quoteDraft.room_location){
+    toast('Please complete the required quote fields.');
+    return;
+  }
+  const calc = quoteCalc(quoteDraft);
+  const ref = quoteNumberForDate(quoteDraft.date_day1);
+  const saved = {
+    id: uid('quote'),
+    quote_ref: ref,
+    status: 'Saved',
+    created_at: nowISO(),
+    updated_at: nowISO(),
+    event_name: quoteDraft.event_name,
+    client_company: quoteDraft.client_company,
+    date_day1: quoteDraft.date_day1,
+    date_day2: quoteDraft.date_day2,
+    date_day3: quoteDraft.date_day3,
+    guests: Number(quoteDraft.guests || 0),
+    room_location: quoteDraft.room_location,
+    room_other: quoteDraft.room_other,
+    style_type: quoteDraft.style_type,
+    organiser: quoteDraft.organiser,
+    allergen_dietary: quoteDraft.allergen_dietary,
+    cost_code: quoteDraft.cost_code,
+    notes: quoteDraft.notes,
+    subtotal: calc.subtotal,
+    mgmt_fee: calc.fee,
+    total_ex_vat: calc.total,
+    day1_lines: clone(quoteDraft.day1_lines),
+    day2_lines: clone(quoteDraft.day2_lines),
+    day3_lines: clone(quoteDraft.day3_lines),
+    day2_enabled: !!quoteDraft.day2_enabled || !!quoteDraft.date_day2 || (quoteDraft.day2_lines||[]).some(l => l && (l.item || l.qty || l.price)),
+    day3_enabled: !!quoteDraft.day3_enabled || !!quoteDraft.date_day3 || (quoteDraft.day3_lines||[]).some(l => l && (l.item || l.qty || l.price)),
+    created_by: session.name
+  };
+  state.quotes.unshift(saved);
+  addInvoiceFromQuote(saved);
+  addMonthEndFromQuote(saved);
+  addLog('Quote', ref, `${saved.event_name} — ${saved.client_company}`, saved.total_ex_vat, 'Saved');
+  saveState();
+  quoteDraft = emptyQuoteDraft();
+  quoteViewTab = 'history';
+  activeTab = 'quotes';
+  render();
+  toast(`Saved ${ref}`);
+}
+function loadQuote(id){
+  const q = state.quotes.find(x => x.id === id); if(!q) return;
+  quoteDraft = {
+    quote_ref:q.quote_ref,event_name:q.event_name,client_company:q.client_company,date_day1:q.date_day1,date_day2:q.date_day2,date_day3:q.date_day3,guests:q.guests,
+    room_location:q.room_location,room_other:q.room_other,style_type:q.style_type,organiser:q.organiser,allergen_dietary:q.allergen_dietary,cost_code:q.cost_code,notes:q.notes,status:q.status,
+    day1_lines: clone(q.day1_lines||[]), day2_lines: clone(q.day2_lines||[]), day3_lines: clone(q.day3_lines||[]), day2_enabled: !!q.day2_enabled || !!q.date_day2 || (q.day2_lines||[]).some(l => l && (l.item || l.qty || l.price)), day3_enabled: !!q.day3_enabled || !!q.date_day3 || (q.day3_lines||[]).some(l => l && (l.item || l.qty || l.price))
+  };
+  quoteViewTab = 'new';
+  activeTab = 'quotes';
+  render();
+}
+function deleteQuote(id){
+  if(!confirm('Delete quote?')) return;
+  state.quotes = state.quotes.filter(q => q.id !== id);
+  saveState(); renderActive();
+}
+function printQuoteById(id){
+  const q = state.quotes.find(x=>x.id===id); if(!q) return;
+  quoteDraft = {
+    quote_ref:q.quote_ref,event_name:q.event_name,client_company:q.client_company,date_day1:q.date_day1,date_day2:q.date_day2,date_day3:q.date_day3,guests:q.guests,
+    room_location:q.room_location,room_other:q.room_other,style_type:q.style_type,organiser:q.organiser,allergen_dietary:q.allergen_dietary,cost_code:q.cost_code,notes:q.notes,
+    day1_lines: clone(q.day1_lines||[]), day2_lines: clone(q.day2_lines||[]), day3_lines: clone(q.day3_lines||[]), day2_enabled: !!q.day2_enabled || !!q.date_day2 || (q.day2_lines||[]).some(l => l && (l.item || l.qty || l.price)), day3_enabled: !!q.day3_enabled || !!q.date_day3 || (q.day3_lines||[]).some(l => l && (l.item || l.qty || l.price))
+  };
+  quoteViewTab = 'preview';
+  printQuoteFromDraft();
+}
+function printQuoteFromDraft(){
+  const c = quoteCalc(quoteDraft);
+  const q = quoteDraft;
+  const room = q.room_location === 'Other' ? q.room_other : q.room_location;
+  document.getElementById('qprint').innerHTML = `
+    <div class="quote-page">
+      <div class="quote-header">
+        <div>
+          <h2>${escapeHtml(state.settings.app_name || 'Hospitality Quote')}</h2>
+          <div class="quote-meta">Quote Ref: <strong>${escapeHtml(q.quote_ref || 'Draft')}</strong></div>
+        </div>
+        <div class="quote-meta">
+          <div><strong>Client</strong><br>${escapeHtml(q.client_company || '')}</div>
+          <div style="margin-top:.35rem"><strong>Event</strong><br>${escapeHtml(q.event_name || '')}</div>
+        </div>
+      </div>
+      <div class="quote-section">
+        <div><strong>Date:</strong> ${fmtDate(q.date_day1)} ${q.date_day2 ? ' / ' + fmtDate(q.date_day2) : ''} ${q.date_day3 ? ' / ' + fmtDate(q.date_day3) : ''}</div>
+        <div><strong>Guests:</strong> ${escapeHtml(q.guests || '')}</div>
+        <div><strong>Room:</strong> ${escapeHtml(room || '')}</div>
+        <div><strong>Organiser:</strong> ${escapeHtml(q.organiser || '')}</div>
+        <div><strong>Cost code:</strong> ${escapeHtml(q.cost_code || '')}</div>
+      </div>
+${renderQuoteDaySections(q)}
+      <div class="quote-section">
+        <table>
+          <tbody>
+            <tr><th>Overall subtotal</th><td>${fmtMoney(c.subtotal)}</td></tr>
+            <tr><th>Management fee</th><td>${fmtMoney(c.fee)}</td></tr>
+            <tr><th>Total (ex VAT)</th><td><strong>${fmtMoney(c.total)}</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="footer-note">Prepared for hospitality operations use. This print view intentionally hides app chrome.</div>
+    </div>`;
+  setTimeout(() => window.print(), 250);
+}
+function saveOrder(){
+  const date = document.getElementById('orderDate').value;
+  const supplier = document.getElementById('orderSupplier').value.trim();
+  const category = document.getElementById('orderCategory').value;
+  const invoice_nr = document.getElementById('orderInvoice').value.trim();
+  const cost = Number(document.getElementById('orderCost').value || 0);
+  const budgeted = Number(document.getElementById('orderBudgeted').value || 0);
+  const received = document.getElementById('orderReceived').value === 'true';
+  const notes = document.getElementById('orderNotes').value.trim();
+  if(!date || !supplier || !category){ toast('Date, supplier and category are required.'); return; }
+  const ord = {id:uid('ord'), week: weekOfMonth(date), date, supplier, category, invoice_nr, cost, budgeted, received, notes, month: date.slice(0,7), created_at: nowISO(), updated_at: nowISO(), created_by: session.name};
+  state.orders.unshift(ord);
+  if(!state.suppliers.find(s => (s.name||s)===supplier)) state.suppliers.unshift({name:supplier, active:true});
+  addLog('Order', invoice_nr || ord.id, `${supplier} — ${category}`, cost, received ? 'Received' : 'Pending');
+  saveState(); renderActive(); toast('Order saved.');
+}
+function weekOfMonth(dateStr){
+  const d = new Date(dateStr+'T00:00:00');
+  return Math.ceil(d.getDate()/7);
+}
+function editOrder(id){
+  const o = state.orders.find(x=>x.id===id); if(!o) return;
+  document.getElementById('orderDate').value = o.date;
+  document.getElementById('orderSupplier').value = o.supplier;
+  document.getElementById('orderCategory').value = o.category;
+  document.getElementById('orderInvoice').value = o.invoice_nr || '';
+  document.getElementById('orderCost').value = o.cost;
+  document.getElementById('orderBudgeted').value = o.budgeted;
+  document.getElementById('orderReceived').value = String(!!o.received);
+  document.getElementById('orderNotes').value = o.notes || '';
+  state.orders = state.orders.filter(x => x.id !== id);
+  saveState(); renderActive(); toast('Edit the order fields and click Add order to save.');
+}
+function saveWastage(){
+  const date = document.getElementById('wasteDate').value;
+  const item = document.getElementById('wasteItem').value.trim();
+  const category = document.getElementById('wasteCategory').value.trim();
+  const qty = Number(document.getElementById('wasteQty').value || 0);
+  const unit = document.getElementById('wasteUnit').value;
+  const reason = document.getElementById('wasteReason').value;
+  const unit_cost = Number(document.getElementById('wasteUnitCost').value || 0);
+  const notes = document.getElementById('wasteNotes').value.trim();
+  const value = qty * unit_cost;
+  if(!date || !item || !qty){ toast('Date, item and quantity are required.'); return; }
+  const row = {id:uid('was'), date, month: date.slice(0,7), item, category, qty, unit, reason, unit_cost, value, notes, created_at: nowISO(), updated_at: nowISO(), created_by: session.name};
+  state.wastage.unshift(row);
+  addLog('Wastage', row.id, `${item} — ${reason}`, value, 'Logged');
+  saveState(); renderActive(); toast('Wastage saved.');
+}
+function recalcWasteValue(){
+  const qty = Number(document.getElementById('wasteQty')?.value || 0);
+  const unit = Number(document.getElementById('wasteUnitCost')?.value || 0);
+  const val = qty * unit;
+  const out = document.getElementById('wasteValue');
+  if(out) out.value = val.toFixed(2);
+}
+function editWastage(id){
+  const w = state.wastage.find(x=>x.id===id); if(!w) return;
+  document.getElementById('wasteDate').value = w.date;
+  document.getElementById('wasteItem').value = w.item;
+  document.getElementById('wasteCategory').value = w.category;
+  document.getElementById('wasteQty').value = w.qty;
+  document.getElementById('wasteUnit').value = w.unit;
+  document.getElementById('wasteReason').value = w.reason;
+  document.getElementById('wasteUnitCost').value = w.unit_cost;
+  document.getElementById('wasteValue').value = w.value;
+  document.getElementById('wasteNotes').value = w.notes || '';
+  state.wastage = state.wastage.filter(x => x.id !== id);
+  saveState(); renderActive(); toast('Edit the wastage fields and click Add wastage to save.');
+}
+function saveItem(){
+  const name = document.getElementById('itemName').value.trim();
+  const category = document.getElementById('itemCategory').value.trim();
+  const purchase = Number(document.getElementById('itemPurchase').value || 0);
+  const markup = normalizeMarkupPct(document.getElementById('itemMarkup').value || 20);
+  const sell = calcSellPrice(purchase, markup);
+  const desc = document.getElementById('itemDesc').value.trim();
+  if(!name || !category){ toast('Name and category are required.'); return; }
+  const existing = state.items.findIndex(i => i.name.toLowerCase() === name.toLowerCase());
+  const obj = {name, category, purchase_price:purchase, markup_pct:markup, sell_price:sell, description:desc};
+  if(existing >= 0) state.items[existing] = obj; else state.items.unshift(obj);
+  saveState(); renderActive(); toast('Item saved.');
+}
+function resetItemForm(){
+  ['itemName','itemCategory','itemPurchase','itemMarkup','itemSell','itemDesc'].forEach(id => {
+    const el = document.getElementById(id);
+    if(!el) return;
+    if(id === 'itemMarkup') el.value = 20;
+    else if(id === 'itemPurchase' || id === 'itemSell') el.value = 0;
+    else el.value = '';
+  });
+  updateItemSellPreview();
+}
+function editItem(index){
+  const i = state.items[index]; if(!i) return;
+  document.getElementById('itemName').value = i.name;
+  document.getElementById('itemCategory').value = i.category;
+  document.getElementById('itemPurchase').value = i.purchase_price;
+  document.getElementById('itemMarkup').value = (Number(i.markup_pct||0)*100).toFixed(0);
+  updateItemSellPreview();
+  const sellEl = document.getElementById('itemSell');
+  if (sellEl) sellEl.value = Number(i.sell_price || 0).toFixed(2);
+  document.getElementById('itemDesc').value = i.description || '';
+}
+function deleteItem(index){
+  if(!confirm('Delete item?')) return;
+  state.items.splice(index,1); saveState(); renderActive();
+}
+function editBudget(month, cat){
+  const cur = budgetFor(month, cat);
+  const val = prompt(`Monthly budget for ${cat} (${monthLabel(month)})`, cur);
+  if(val === null) return;
+  const num = Number(val || 0);
+  let row = state.budgets.find(b => b.month===month && b.category===cat);
+  if(!row){ row = {month, category:cat, monthly_budget:num}; state.budgets.push(row); } else row.monthly_budget = num;
+  saveState(); renderActive();
+}
+function saveEmployee(){
+  const name = document.getElementById('empName').value.trim();
+  const entitlement_days = Number(document.getElementById('empDays').value || 0);
+  const start_date = document.getElementById('empStart').value || isoDate();
+  const role = document.getElementById('empRole').value.trim() || '';
+  const notes = document.getElementById('empNotes').value.trim();
+  if(!name){ toast('Employee name required.'); return; }
+  const existing = state.employees.findIndex(e => e.name.toLowerCase() === name.toLowerCase());
+  const emp = {name, entitlement_days, start_date, notes, role, active:true};
+  if(existing >= 0) state.employees[existing] = emp; else state.employees.unshift(emp);
+  saveState(); renderActive(); toast('Employee saved.');
+}
+function resetEmployeeForm(){
+  ['empName','empDays','empStart','empRole','empNotes'].forEach(id => { const el = document.getElementById(id); if(el) el.value = id==='empDays' ? 0 : ''; });
+}
+function editEmployee(index){
+  const e = state.employees[index]; if(!e) return;
+  document.getElementById('empName').value = e.name;
+  document.getElementById('empDays').value = e.entitlement_days;
+  document.getElementById('empStart').value = e.start_date;
+  document.getElementById('empRole').value = e.role || '';
+  document.getElementById('empNotes').value = e.notes || '';
+}
+function deleteEmployee(index){
+  if(!confirm('Delete employee?')) return;
+  state.employees.splice(index,1); saveState(); renderActive();
+}
+function saveLeave(){
+  const employee_name = document.getElementById('leaveEmp').value;
+  const type = document.getElementById('leaveType').value;
+  const start_date = document.getElementById('leaveStart').value;
+  const end_date = document.getElementById('leaveEnd').value || start_date;
+  const notes = document.getElementById('leaveNotes').value.trim();
+  if(!employee_name || !start_date){ toast('Employee and start date are required.'); return; }
+  const days = workingDaysBetween(start_date, end_date);
+  const leave = {id:uid('leave'), employee_name, type, start_date, end_date, days, notes, status:'Logged', created_at:nowISO(), updated_at:nowISO()};
+  state.leave.unshift(leave);
+  saveState(); renderActive(); toast('Leave saved.');
+}
+function workingDaysBetween(a,b){
+  let d1 = new Date(a+'T00:00:00'), d2 = new Date(b+'T00:00:00');
+  if(d2 < d1) [d1,d2] = [d2,d1];
+  const hols = new Set(state.bank_holidays.map(h=>h.date));
+  let count = 0;
+  for(let d = new Date(d1); d <= d2; d.setDate(d.getDate()+1)){
+    const ds = d.toISOString().slice(0,10);
+    const day = d.getDay();
+    if(day===0 || day===6 || hols.has(ds)) continue;
+    count++;
+  }
+  return count;
+}
+function deleteLeave(index){
+  if(!confirm('Delete leave record?')) return;
+  state.leave.splice(index,1); saveState(); renderActive();
+}
+function removeById(collection, id){
+  if(!confirm('Delete record?')) return;
+  state[collection] = state[collection].filter(x => x.id !== id);
+  saveState(); renderActive();
+}
+function saveSettings(){
+  state.settings.app_name = document.getElementById('setAppName').value.trim() || 'Hospitality Operations Platform';
+  state.settings.management_fee_pct = Number(document.getElementById('setMgmtFee').value || 0.12);
+  state.settings.manager_password = document.getElementById('setManagerPass').value || 'manager123';
+  state.settings.supervisor_password = document.getElementById('setSupervisorPass').value || 'supervisor123';
+  state.settings.spreadsheet_id = document.getElementById('setSheetId').value.trim();
+  state.settings.apps_script_url = document.getElementById('setScriptUrl').value.trim();
+  state.settings.sync_mode = document.getElementById('setSyncMode').value;
+  const bt = document.getElementById('setBackupTime').value || '16:00';
+  const [hh,mm] = bt.split(':').map(Number);
+  state.settings.backup_reminder_hour = hh;
+  state.settings.backup_reminder_minute = mm;
+  saveState(); render(); if(session.loggedIn) startCloudSync(); toast('Settings saved.');
+}
+function exportJson(){
+  const blob = new Blob([JSON.stringify(state, null, 2)], {type:'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `hospitality_backup_${isoDate()}.json`; a.click();
+}
+function resetToSeed(){ if(!confirm('Reset all local data to the initial seed?')) return; localStorage.removeItem(STORAGE_KEY); location.reload(); }
+function restoreFromFile(ev){
+  const file = ev.target.files?.[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try{
+      const imported = JSON.parse(reader.result);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(hydrateState(imported)));
+      location.reload();
+    }catch(e){ toast('Invalid JSON backup.'); }
+  };
+  reader.readAsText(file);
+}
+function quotesCsv(){
+  const headers = ['quote_ref','event_name','client_company','date_day1','date_day2','date_day3','guests','room_location','style_type','organiser','cost_code','subtotal','mgmt_fee','total_ex_vat','status'];
+  const rows = state.quotes.map(q => headers.map(h => csvCell(q[h])).join(','));
+  return [headers.join(','), ...rows].join('\n');
+}
+function ordersCsv(){
+  const headers = ['week','date','supplier','category','invoice_nr','cost','budgeted','received','notes','month'];
+  const rows = state.orders.map(o => headers.map(h => csvCell(o[h])).join(','));
+  return [headers.join(','), ...rows].join('\n');
+}
+function wastageCsv(){
+  const headers = ['date','month','item','category','qty','unit','reason','unit_cost','value','notes'];
+  const rows = state.wastage.map(w => headers.map(h => csvCell(w[h])).join(','));
+  return [headers.join(','), ...rows].join('\n');
+}
+function invoicesCsv(){
+  const headers = ['invoice_no','quote_ref','event_name','client_company','date','cost_code','net','fee','total','status'];
+  const rows = state.invoices.map(i => headers.map(h => csvCell(i[h])).join(','));
+  return [headers.join(','), ...rows].join('\n');
+}
+function monthEndCsv(){
+  const headers = ['month','event_ref','event_name','client_company','subtotal','mgmt_fee','total','notes'];
+  const rows = state.month_end.map(i => headers.map(h => csvCell(i[h])).join(','));
+  return [headers.join(','), ...rows].join('\n');
+}
+function csvCell(v){ const s = String(v ?? ''); return /[,"\n]/.test(s) ? `"${s.replace(/"/g,'""')}"` : s; }
+function downloadCsv(filename, text){
+  const blob = new Blob([text], {type:'text/csv'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = filename; a.click();
+}
+function generateMonthEnd(){
+  const month = prompt('Generate month end for which month? (YYYY-MM)', monthKey());
+  if(!month) return;
+  const quotes = state.quotes.filter(q => (q.date_day1 || '').startsWith(month));
+  const orders = state.orders.filter(o => (o.date || '').startsWith(month));
+  const wastage = state.wastage.filter(w => (w.date || '').startsWith(month));
+  const summary = {
+    quotes: quotes.length,
+    quote_total: quotes.reduce((a,q)=>a+Number(q.total_ex_vat||0),0),
+    orders_total: orders.reduce((a,o)=>a+Number(o.cost||0),0),
+    wastage_total: wastage.reduce((a,w)=>a+Number(w.value||0),0)
+  };
+  state.month_end.unshift({
+    id: uid('me'),
+    month,
+    event_ref: 'MONTH-END',
+    event_name: 'Month-end summary',
+    client_company: '',
+    subtotal: summary.quote_total,
+    mgmt_fee: 0,
+    total: summary.quote_total - summary.orders_total - summary.wastage_total,
+    category_summary_json: JSON.stringify(summary),
+    notes: `Quotes: ${summary.quotes}, Orders total: ${fmtMoney(summary.orders_total)}, Wastage total: ${fmtMoney(summary.wastage_total)}`,
+    created_at: nowISO()
+  });
+  saveState(); renderActive(); toast(`Month-end generated for ${month}.`);
+}
+function startBackupReminder(){
+  // lightweight in-browser reminder while app stays open
+  if(window.__backupTimer) clearInterval(window.__backupTimer);
+  window.__backupTimer = setInterval(() => {
+    const now = new Date();
+    if(now.getHours() === Number(state.settings.backup_reminder_hour || 16) &&
+       now.getMinutes() === Number(state.settings.backup_reminder_minute || 0) &&
+       now.getSeconds() < 5) {
+      if(confirm('Back up your data to Google Drive now?')) exportJson();
+    }
+  }, 1000);
+}
+function csvEscape(str){ return csvCell(str); }
+
+window.addEventListener('storage', e => { if(e.key === STORAGE_KEY) { Object.assign(state, loadState()); render(); } });
+render();
+</script>
+
+
+</body></html>
